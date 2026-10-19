@@ -1,0 +1,39 @@
+﻿FUNCTION ZCORE_FM_SET_TITLE_REPORT.
+*"--------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(ALV_GRID) TYPE REF TO CL_GUI_ALV_GRID
+*"     REFERENCE(I_SY) TYPE  SYST OPTIONAL
+*"  EXPORTING
+*"     REFERENCE(E_TITLE) TYPE  CHAR255
+*"  TABLES
+*"      GT_ITEM
+*"--------------------------------------------------------------------
+DATA: LT_FILTER TYPE LVC_T_FIDX.
+
+  CALL METHOD ALV_GRID->GET_FILTERED_ENTRIES
+    IMPORTING
+      ET_FILTERED_ENTRIES = LT_FILTER.
+  DATA(LW_LINES)  = LINES( GT_ITEM ).
+  DATA(LW_LINES2) = LINES( LT_FILTER ).
+
+  LW_LINES        = LW_LINES - LW_LINES2.
+  WRITE LW_LINES TO E_TITLE.
+  CONDENSE E_TITLE.
+
+*  SELECT SINGLE TEXT
+*  INTO @DATA(LS_TEXT)
+*  FROM TRDIRT
+*  WHERE NAME = @I_SY-CPROG AND
+*        SPRSL = 'E'.
+
+  CONCATENATE '(' E_TITLE 'Entries' ')' INTO E_TITLE SEPARATED BY SPACE.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

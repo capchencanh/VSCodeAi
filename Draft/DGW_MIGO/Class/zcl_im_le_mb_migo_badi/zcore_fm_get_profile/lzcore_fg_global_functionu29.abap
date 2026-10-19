@@ -1,0 +1,43 @@
+﻿FUNCTION ZCORE_FM_CURR_RATE.
+*"--------------------------------------------------------------------
+*"*"Local Interface:
+*"  TABLES
+*"      ET_CURR_RATE STRUCTURE  ZCORE_ST_CURR
+*"--------------------------------------------------------------------
+DATA: LT_TCURC TYPE TABLE OF  TCURC,
+        LS_TCURC TYPE           TCURC,
+        LT_TCURX TYPE HASHED TABLE OF TCURX WITH UNIQUE KEY CURRKEY,
+        LS_TCURX TYPE           TCURX,
+        LS_CURR  TYPE           ZCORE_ST_CURR.
+
+  SELECT *
+    INTO TABLE LT_TCURC
+    FROM TCURC.
+
+  SELECT *
+    INTO TABLE LT_TCURX
+    FROM TCURX.
+
+  LOOP AT LT_TCURC INTO LS_TCURC.
+    LS_CURR-WAERS = LS_TCURC-WAERS.
+    READ TABLE LT_TCURX INTO LS_TCURX WITH TABLE KEY CURRKEY = LS_TCURC-WAERS.
+    IF SY-SUBRC = 0.
+      LS_CURR-CURRDEC = LS_TCURX-CURRDEC.
+      LS_CURR-SHIFT = 2 - LS_TCURX-CURRDEC.
+    ELSE.
+      LS_CURR-CURRDEC = 2.
+      LS_CURR-SHIFT = 0.
+    ENDIF.
+    LS_CURR-CURR_RATE = 10 ** LS_CURR-SHIFT.
+    APPEND LS_CURR TO ET_CURR_RATE.
+    CLEAR LS_CURR.
+  ENDLOOP.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

@@ -1,0 +1,62 @@
+﻿FUNCTION ZCORE_FM_GET_PROFILE_N.
+*"----------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(I_TYPE) TYPE  CHAR1
+*"     REFERENCE(I_NUMBER) TYPE  CHAR10 OPTIONAL
+*"     REFERENCE(I_BUKRS) TYPE  BUKRS OPTIONAL
+*"     REFERENCE(I_GJAHR) TYPE  GJAHR OPTIONAL
+*"     REFERENCE(I_BELNR) TYPE  BELNR_D OPTIONAL
+*"     REFERENCE(I_BUZEI) TYPE  BUZEI OPTIONAL
+*"  EXPORTING
+*"     REFERENCE(E_S_EXPORT) TYPE  ZCORE_ST_GET_PROFILE
+*"  TABLES
+*"      E_T_EXPORT STRUCTURE  ZCORE_ST_GET_PROFILE OPTIONAL
+*"      I_OBJECT OPTIONAL
+*"----------------------------------------------------------------------
+DATA: LR_OBJECT   TYPE RANGE OF CHAR10 WITH HEADER LINE.
+
+
+  IF I_BELNR IS NOT INITIAL AND I_NUMBER IS INITIAL.
+    EXIT. "Chi xu ly TH one time cho 1 doi tuong
+  ENDIF.
+
+  IF I_NUMBER IS SUPPLIED AND I_NUMBER IS NOT INITIAL.
+    LR_OBJECT-SIGN = 'I'.
+    LR_OBJECT-OPTION = 'EQ'.
+    LR_OBJECT-LOW = I_NUMBER.
+    APPEND LR_OBJECT.
+  ELSEIF I_OBJECT IS REQUESTED.
+    IF I_TYPE = 'C' OR I_TYPE = 'P'. " Do kieu du lieu là NUMC4 < CHAR10
+      MOVE-CORRESPONDING I_OBJECT[] TO LR_OBJECT[].
+    ELSE.
+      LR_OBJECT[] = I_OBJECT[].
+    ENDIF.
+  ENDIF.
+
+  CASE I_TYPE.
+    WHEN 'C'. " GET PROFILE COMPANY CODE
+      PERFORM GET_CC_PROFILE_N    TABLES LR_OBJECT E_T_EXPORT
+                                  CHANGING  E_S_EXPORT.
+    WHEN 'P'.
+      PERFORM GET_PLANT_PROFILE_N TABLES LR_OBJECT E_T_EXPORT
+                                  CHANGING  E_S_EXPORT.
+    WHEN 'K'.
+      PERFORM GET_VEN_PROFILE_N   TABLES LR_OBJECT E_T_EXPORT
+                                  USING I_BUKRS I_GJAHR I_BELNR I_BUZEI
+                                  CHANGING  E_S_EXPORT.
+    WHEN 'D'.
+      PERFORM GET_CUS_PROFILE_N   TABLES LR_OBJECT E_T_EXPORT
+                                  USING I_BUKRS I_GJAHR I_BELNR I_BUZEI
+                                  CHANGING  E_S_EXPORT.
+    WHEN OTHERS.
+  ENDCASE.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

@@ -1,0 +1,40 @@
+*&---------------------------------------------------------------------*
+*& Report ZPG_SD_TDTHGT - Bao cao theo doi thuc hien goi thau (ZRSD27)
+*&---------------------------------------------------------------------*
+REPORT ZPG_SD_TDTHGT MESSAGE-ID ZMC_SD.
+
+INCLUDE ZIN_SD_TDTHGT_TOP.
+INCLUDE ZIN_SD_TDTHGT_PBO.
+INCLUDE ZIN_SD_TDTHGT_PAI.
+INCLUDE ZIN_SD_TDTHGT_F01.
+INCLUDE ZIN_SD_TDTHGT_F02.
+
+INITIALIZATION.
+  PERFORM INIT_SCREEN.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR S_VBEL1-LOW.
+  PERFORM F4_CONTRACT_L1 USING 'S_VBEL1-LOW'.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR S_VBEL1-HIGH.
+  PERFORM F4_CONTRACT_L1 USING 'S_VBEL1-HIGH'.
+
+AT SELECTION-SCREEN.
+  IF SY-UCOMM = 'ONLI'.
+    PERFORM CHECK_INPUT.
+  ENDIF.
+
+START-OF-SELECTION.
+  PERFORM CALC_DATES.
+  PERFORM GET_DATA.
+
+  IF GR_OUT IS INITIAL OR <GFS_OUT> IS INITIAL.
+    MESSAGE 'Không tìm thấy dữ liệu với điều kiện đã chọn' TYPE 'S'
+            DISPLAY LIKE 'E'. "#EC NOTEXT
+    RETURN.
+  ENDIF.
+
+  IF P_XLS = ABAP_TRUE.
+    MESSAGE 'Dạng bảng tính: dùng nút Export của ALV để xuất file' TYPE 'S'. "#EC NOTEXT
+  ENDIF.
+
+  CALL SCREEN 0100.

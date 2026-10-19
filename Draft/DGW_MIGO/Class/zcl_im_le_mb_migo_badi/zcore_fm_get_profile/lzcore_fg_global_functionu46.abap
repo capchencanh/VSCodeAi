@@ -1,0 +1,52 @@
+﻿FUNCTION ZCORE_SHIFT_RIGHT_ZERO.
+*"--------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(I_TEXT)
+*"     REFERENCE(I_USER) TYPE  USNAM
+*"  EXPORTING
+*"     REFERENCE(E_TEXT)
+*"--------------------------------------------------------------------
+TYPES:
+    BEGIN OF LTY_USER_FORMAT,
+      BNAME TYPE USR01-BNAME,
+      DCPFM TYPE USR01-DCPFM,
+    END OF LTY_USER_FORMAT.
+  DATA:
+    GS_USER TYPE LTY_USER_FORMAT.
+  "get data user format
+  SELECT SINGLE
+    BNAME
+    DCPFM
+    INTO GS_USER
+    FROM USR01
+    WHERE BNAME EQ I_USER.
+
+  E_TEXT = I_TEXT.
+  CONDENSE E_TEXT.
+  IF GS_USER-DCPFM EQ 'X'."1,000.000
+    IF E_TEXT CS '.'.
+      SHIFT E_TEXT RIGHT DELETING TRAILING '0 '.
+      SHIFT E_TEXT RIGHT DELETING TRAILING '. '.
+    ENDIF.
+  ELSEIF GS_USER-DCPFM IS INITIAL."1.000,000
+    IF E_TEXT CS ','.
+      SHIFT E_TEXT RIGHT DELETING TRAILING '0 '.
+      SHIFT E_TEXT RIGHT DELETING TRAILING ', '.
+    ENDIF.
+  ELSEIF GS_USER-DCPFM EQ 'Y'."1000,000
+    IF E_TEXT CS ','.
+      SHIFT E_TEXT RIGHT DELETING TRAILING '0 '.
+      SHIFT E_TEXT RIGHT DELETING TRAILING ', '.
+    ENDIF.
+  ENDIF.
+  CONDENSE E_TEXT.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

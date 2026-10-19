@@ -1,0 +1,641 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=ISO-8859-1" />
+<title>Dictionary object- SPELL</title>
+<style type="text/css">
+  th{text-align:left}
+  .cell{
+     font-family:"Courier New", Courier, monospace;
+     color:#000;
+     font-size:12px;
+     background-color:#F2F4F7;
+  }
+  .cell td { border: thin solid #ccc; }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Table: SPELL</h2>
+  <h3>Description: Transfer structure for amounts rendered in words</h3></td>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Row</th>
+  <th>Field name</th>
+  <th>Position</th>
+  <th>Key</th>
+  <th>Data element</th>
+  <th>Domain</th>
+  <th>Datatype</th>
+  <th>Length</th>
+  <th>Lowercase</th>
+  <th>Domain text</th>
+</tr>
+<tr class="cell">
+  <td> 1</td>
+  <td>CURRDEC</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>CURRDEC</td>
+  <td>CURRDEC</td>
+  <td>INT1</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Number of decimal places</td>
+</tr>
+<tr class="cell">
+  <td> 2</td>
+  <td>DECIMAL</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>IN_DECI</td>
+  <td>NUMC03</td>
+  <td>NUMC</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Decimal places of the amount converted</td>
+</tr>
+<tr class="cell">
+  <td> 3</td>
+  <td>DECWORD</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>DECWORD</td>
+  <td>CHAR128</td>
+  <td>CHAR</td>
+  <td>128</td>
+  <td>&nbsp;</td>
+  <td>Decimal places in words</td>
+</tr>
+<tr class="cell">
+  <td> 4</td>
+  <td>DIG01</td>
+  <td>6</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td> 5</td>
+  <td>DIG02</td>
+  <td>7</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td> 6</td>
+  <td>DIG03</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td> 7</td>
+  <td>DIG04</td>
+  <td>9</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td> 8</td>
+  <td>DIG05</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td> 9</td>
+  <td>DIG06</td>
+  <td>11</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>10</td>
+  <td>DIG07</td>
+  <td>12</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>11</td>
+  <td>DIG08</td>
+  <td>13</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>12</td>
+  <td>DIG09</td>
+  <td>14</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>13</td>
+  <td>DIG10</td>
+  <td>15</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>14</td>
+  <td>DIG11</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>15</td>
+  <td>DIG12</td>
+  <td>17</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>16</td>
+  <td>DIG13</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>17</td>
+  <td>DIG14</td>
+  <td>19</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>18</td>
+  <td>DIG15</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>19</td>
+  <td>DIG16</td>
+  <td>21</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>20</td>
+  <td>DIG17</td>
+  <td>22</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>21</td>
+  <td>DIG18</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>22</td>
+  <td>DIG19</td>
+  <td>24</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>23</td>
+  <td>DIG20</td>
+  <td>25</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>24</td>
+  <td>DIG21</td>
+  <td>26</td>
+  <td>&nbsp;</td>
+  <td>DZWORT</td>
+  <td>TEXT7</td>
+  <td>CHAR</td>
+  <td>7</td>
+  <td>X</td>
+  <td>Figure in words (units, tens, ...)</td>
+</tr>
+<tr class="cell">
+  <td>25</td>
+  <td>DIL01</td>
+  <td>27</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>26</td>
+  <td>DIL02</td>
+  <td>28</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>27</td>
+  <td>DIL03</td>
+  <td>29</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>28</td>
+  <td>DIL04</td>
+  <td>30</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>29</td>
+  <td>DIL05</td>
+  <td>31</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>30</td>
+  <td>DIL06</td>
+  <td>32</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>31</td>
+  <td>DIL07</td>
+  <td>33</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>32</td>
+  <td>DIL08</td>
+  <td>34</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>33</td>
+  <td>DIL09</td>
+  <td>35</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>34</td>
+  <td>DIL10</td>
+  <td>36</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>35</td>
+  <td>DIL11</td>
+  <td>37</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>36</td>
+  <td>DIL12</td>
+  <td>38</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>37</td>
+  <td>DIL13</td>
+  <td>39</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>38</td>
+  <td>DIL14</td>
+  <td>40</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>39</td>
+  <td>DIL15</td>
+  <td>41</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>40</td>
+  <td>DIL16</td>
+  <td>42</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>41</td>
+  <td>DIL17</td>
+  <td>43</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>42</td>
+  <td>DIL18</td>
+  <td>44</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>43</td>
+  <td>DIL19</td>
+  <td>45</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>44</td>
+  <td>DIL20</td>
+  <td>46</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>45</td>
+  <td>DIL21</td>
+  <td>47</td>
+  <td>&nbsp;</td>
+  <td>DZWORT_L</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Figure in Words (ones, tens, ...), Longer</td>
+</tr>
+<tr class="cell">
+  <td>46</td>
+  <td>NUMBER</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>IN_NUMBERS</td>
+  <td>NUMC21</td>
+  <td>NUMC</td>
+  <td>21</td>
+  <td>&nbsp;</td>
+  <td>Whole digits of the amount converted</td>
+</tr>
+<tr class="cell">
+  <td>47</td>
+  <td>WORD</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>IN_WORDS</td>
+  <td>CHAR510</td>
+  <td>CHAR</td>
+  <td>510</td>
+  <td>&nbsp;</td>
+  <td>Amount in words</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+<br/>
+   <tr>
+<td class="footer">Extracted by EKB-Tech  - Chris. 20260928. Sap Release 757</td>
+   </tr>
+</table>
+</body>
+</html>

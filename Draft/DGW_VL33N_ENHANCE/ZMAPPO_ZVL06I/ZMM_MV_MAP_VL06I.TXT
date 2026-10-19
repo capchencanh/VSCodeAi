@@ -1,0 +1,15 @@
+Dưới đây là nội dung văn bản được trích xuất từ hình ảnh `image_87cd9d.png` để bạn có thể dễ dàng sao chép:
+
+**Thông tin chung:**
+
+* **Maintenance View:** `ZMM_MV_MAP_VL06I` (Active)
+* **Short Description:** Khai báo điều kiện đầu vào của ZVL06I
+
+**Chi tiết các trường (View Fields):**
+
+| View field | Table | Field | P | Key | Data elem. | M... | DTyp | Length | Short description | Switch |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| MANDT | ZMM_TB_MAP_VL06I | MANDT |  | [x] | MANDT | [ ] | CLNT | 3 | Client |  |
+| BSART | ZMM_TB_MAP_VL06I | BSART |  | [x] | BSART | [ ] | CHAR | 4 | Order Type (Purchasing) |  |
+| BATXT | T161T | BATXT | R | [ ] | BATXT | [ ] | CHAR | 20 | Short Description of Purchasing Document Type |  |
+| ZZREL_CODE | ZMM_TB_MAP_VL06I | ZZREL_CODE |  | [ ] | ZDE_REL_CODE_VL06I | [ ] | CHAR | 1 | Cấp duyệt trong ZVL06I |  |

@@ -1,0 +1,3595 @@
+﻿*----------------------------------------------------------------------*
+***INCLUDE LZCORE_FG_GLOBAL_FUNCTIONF02.
+*----------------------------------------------------------------------*
+
+FORM SEPARATED_TO_INTERN_CONVERT TABLES I_TAB       TYPE TY_T_SENDER
+                                        I_INTERN    TYPE TY_T_ITAB
+                                 USING  I_SEPARATOR TYPE C.
+  DATA: L_SIC_TABIX LIKE SY-TABIX,
+        L_SIC_COL   TYPE KCD_EX_COL.
+  DATA: L_FDPOS     LIKE SY-FDPOS.
+
+  REFRESH I_INTERN.
+
+  LOOP AT I_TAB.
+    L_SIC_TABIX = SY-TABIX.
+    L_SIC_COL = 0.
+    WHILE I_TAB CA I_SEPARATOR.
+      L_FDPOS = SY-FDPOS.
+      L_SIC_COL = L_SIC_COL + 1.
+      PERFORM LINE_TO_CELL_SEPARAT TABLES I_INTERN
+                                   USING  I_TAB L_SIC_TABIX L_SIC_COL
+                                          I_SEPARATOR L_FDPOS.
+    ENDWHILE.
+    IF I_TAB <> SPACE.
+      CLEAR I_INTERN.
+      I_INTERN-ROW = L_SIC_TABIX.
+      I_INTERN-COL = L_SIC_COL + 1.
+      I_INTERN-VALUE = I_TAB.
+      APPEND I_INTERN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.                    " SEPARATED_TO_INTERN_CONVERT
+
+FORM LINE_TO_CELL_SEPARAT TABLES I_INTERN    TYPE TY_T_ITAB
+                          USING  I_LINE
+                                 I_ROW       LIKE SY-TABIX
+                                 CH_CELL_COL TYPE KCD_EX_COL
+                                 I_SEPARATOR TYPE C
+                                 I_FDPOS     LIKE SY-FDPOS.
+  DATA: L_STRING   TYPE TY_S_SENDERLINE.
+  DATA  L_SIC_INT  TYPE I.
+
+  CLEAR I_INTERN.
+  L_SIC_INT = I_FDPOS.
+  I_INTERN-ROW = I_ROW.
+  L_STRING = I_LINE.
+  I_INTERN-COL = CH_CELL_COL.
+* csv Dateien mit separator in Zelle: --> ;"abc;cd";
+  IF ( I_SEPARATOR = ';' OR  I_SEPARATOR = ',' ) AND
+       L_STRING(1) = GC_ESC.
+    PERFORM LINE_TO_CELL_ESC_SEP USING L_STRING
+                                       L_SIC_INT
+                                       I_SEPARATOR
+                                       I_INTERN-VALUE.
+  ELSE.
+    IF L_SIC_INT > 0.
+      I_INTERN-VALUE = I_LINE(L_SIC_INT).
+    ENDIF.
+  ENDIF.
+  IF L_SIC_INT > 0.
+    APPEND I_INTERN.
+  ENDIF.
+  L_SIC_INT = L_SIC_INT + 1.
+  I_LINE = I_LINE+L_SIC_INT.
+ENDFORM.
+
+FORM LINE_TO_CELL_ESC_SEP USING I_STRING
+                                I_SIC_INT      TYPE I
+                                I_SEPARATOR    TYPE C
+                                I_INTERN_VALUE TYPE TY_D_ITABVALUE.
+  DATA: L_INT         TYPE I,
+        L_CELL_END(2).
+  FIELD-SYMBOLS: <L_CELL>.
+  L_CELL_END = GC_ESC.
+  L_CELL_END+1 = I_SEPARATOR .
+
+  IF I_STRING CS GC_ESC.
+    I_STRING = I_STRING+1.
+    IF I_STRING CS L_CELL_END.
+      L_INT = SY-FDPOS.
+      ASSIGN I_STRING(L_INT) TO <L_CELL>.
+      I_INTERN_VALUE = <L_CELL>.
+      L_INT = L_INT + 2.
+      I_SIC_INT = L_INT.
+      I_STRING = I_STRING+L_INT.
+    ELSEIF I_STRING CS GC_ESC.
+*     letzte Celle
+      L_INT = SY-FDPOS.
+      ASSIGN I_STRING(L_INT) TO <L_CELL>.
+      I_INTERN_VALUE = <L_CELL>.
+      L_INT = L_INT + 1.
+      I_SIC_INT = L_INT.
+      I_STRING = I_STRING+L_INT.
+      L_INT = STRLEN( I_STRING ).
+      IF L_INT > 0 . MESSAGE X001(KX) . ENDIF.
+    ELSE.
+      MESSAGE X001(KX) . "was ist mit csv-Format
+    ENDIF.
+  ENDIF.
+ENDFORM.
+
+
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_TOP_HTML
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+*FORM ALV_GRID_TOP_HTML
+*  USING LPS_DYNDOC_ID TYPE REF TO CL_DD_DOCUMENT.
+*
+*  EXPORT IT_LIST_COMMENTARY
+*    FROM GT_HEADER TO MEMORY ID 'DYNDOS_FOR_ALV'.
+*
+*  CALL FUNCTION 'REUSE_ALV_GRID_COMMENTARY_SET'
+*    EXPORTING
+*      DOCUMENT = LPS_DYNDOC_ID
+*      BOTTOM   = SPACE.
+*
+*ENDFORM.                    "ALV_GRID_TOP_HTML
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_STATUS_SET
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+*FORM ALV_GRID_PF_STATUS_SET
+*    USING RT_EXTAB TYPE KKBLO_T_EXTAB.
+*
+*  CHECK GW_CALLBACK_PF_STATUS_SET IS NOT INITIAL
+*    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+*
+*  PERFORM (GW_CALLBACK_PF_STATUS_SET) IN PROGRAM (GW_CALLBACK_PROGRAM)
+*    USING RT_EXTAB.
+*
+*
+*ENDFORM.                    "ALV_GRID_STATUS_SET
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_USER_COMMAND
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+*FORM ALV_GRID_USER_COMMAND
+*    USING R_UCOMM     TYPE SY-UCOMM
+*          RS_SELFIELD TYPE SLIS_SELFIELD.
+*
+*  CHECK GW_CALLBACK_USER_COMMAND IS NOT INITIAL
+*    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+*
+*  PERFORM (GW_CALLBACK_USER_COMMAND) IN PROGRAM (GW_CALLBACK_PROGRAM)
+*    USING R_UCOMM RS_SELFIELD.
+*ENDFORM.                    "ALV_GRID_USER_COMMAND
+*
+**&---------------------------------------------------------------------*
+**&      Form  ALV_GRID_TOP_OF_PAGE
+**&---------------------------------------------------------------------*
+**       Show top HTML of ALV
+**----------------------------------------------------------------------*
+**      -->LPS_DYNDOC_ID  Document ID
+**----------------------------------------------------------------------*
+*FORM ALV_GRID_TOP_OF_PAGE.
+*
+*  CHECK GW_CALLBACK_TOP_OF_PAGE IS NOT INITIAL
+*    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+*
+*  PERFORM (GW_CALLBACK_TOP_OF_PAGE) IN PROGRAM (GW_CALLBACK_PROGRAM).
+*
+*ENDFORM.                    "ALV_GRID_TOP_OF_PAGE
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_HTML_END_OF_LIST
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+*FORM ALV_GRID_HTML_END_OF_LIST
+*  USING LPS_DYNDOC_ID TYPE REF TO CL_DD_DOCUMENT.
+*
+*  CHECK GW_CALLBACK_HTML_END_OF_LIST IS NOT INITIAL
+*    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+*
+*  PERFORM (GW_CALLBACK_HTML_END_OF_LIST)
+*    IN PROGRAM (GW_CALLBACK_PROGRAM).
+*
+*ENDFORM.                    "ALV_GRID_HTML_END_OF_LIST
+
+*&---------------------------------------------------------------------*
+*&      Form  CREATE_ALV_OBJECTS
+*&---------------------------------------------------------------------*
+*       Create objects
+*----------------------------------------------------------------------*
+FORM CREATE_ALV_OBJECTS
+  USING I_EXTENSION TYPE I
+        I_SIDE      TYPE I.
+  DATA:
+    LT_EVENTS    TYPE CNTL_SIMPLE_EVENTS,
+    LS_EVENT     TYPE CNTL_SIMPLE_EVENT,
+    LW_EXTENSION TYPE I.
+
+  LW_EXTENSION = I_EXTENSION.
+  IF I_EXTENSION IS INITIAL.
+    LW_EXTENSION = 100.
+  ENDIF.
+
+* Create Docking container
+  CREATE OBJECT GO_ALV_DOCKING
+    EXPORTING
+      REPID                       = SY-CPROG
+      DYNNR                       = SY-DYNNR
+      SIDE                        = I_SIDE
+      EXTENSION                   = LW_EXTENSION
+    EXCEPTIONS
+      CNTL_ERROR                  = 1
+      CNTL_SYSTEM_ERROR           = 2
+      CREATE_ERROR                = 3
+      LIFETIME_ERROR              = 4
+      LIFETIME_DYNPRO_DYNPRO_LINK = 5
+      OTHERS                      = 6.
+
+* Create Grid
+  CREATE OBJECT GO_ALV_GRID
+    EXPORTING
+      I_PARENT = GO_ALV_DOCKING.
+
+ENDFORM.                    " CREATE_ALV_OBJECTS
+
+*&---------------------------------------------------------------------*
+*&      Form  CHECK_PARAMETERS
+*&---------------------------------------------------------------------*
+*       Check input parameter
+*----------------------------------------------------------------------*
+FORM CHECK_PARAMETERS
+  USING
+    I_STRUCTURE       TYPE  TABNAME
+    T_FIELDCAT        TYPE  LVC_T_FCAT
+    T_TABLE_CHANGED   TYPE  ANY TABLE
+    T_TABLE_ORIGINAL  TYPE  ANY TABLE
+    I_GET_ORG_DATA    TYPE  XMARK.
+
+  PERFORM CHECK_STRUCTURE USING I_STRUCTURE T_FIELDCAT.
+
+  IF T_TABLE_CHANGED IS INITIAL AND T_TABLE_ORIGINAL IS INITIAL.
+    RAISE NO_DATA.
+  ENDIF.
+
+  IF  T_TABLE_ORIGINAL IS NOT INITIAL
+  AND I_GET_ORG_DATA IS NOT INITIAL.
+    RAISE CONFLICT_ORIGINAL_DATA.
+  ENDIF.
+ENDFORM.    "CHECK_PARAMETERS
+
+*&---------------------------------------------------------------------*
+*&      Form  CHECK_STRUCTURE
+*&---------------------------------------------------------------------*
+*       Check structure info
+*----------------------------------------------------------------------*
+*      -->I_STRUCTURE  text
+*      -->T_FIELDCAT   text
+*----------------------------------------------------------------------*
+FORM CHECK_STRUCTURE
+  USING I_STRUCTURE       TYPE  TABNAME
+        T_FIELDCAT        TYPE  LVC_T_FCAT.
+
+  IF I_STRUCTURE IS INITIAL AND T_FIELDCAT[] IS INITIAL.
+    RAISE NO_STRUCTURE.
+  ELSEIF I_STRUCTURE IS NOT INITIAL AND T_FIELDCAT[] IS NOT INITIAL.
+    RAISE CONFLICT_STRUCTURE.
+  ENDIF.
+
+ENDFORM.                    "CHECK_STRUCTURE
+*&---------------------------------------------------------------------*
+*&      Form  GET_FIELDCAT
+*&---------------------------------------------------------------------*
+*       Get field category
+*----------------------------------------------------------------------*
+*      -->I_STRUCTURE  text
+*      -->T_FIELDCAT   text
+*----------------------------------------------------------------------*
+FORM GET_FIELDCAT
+  USING
+   I_STRUCTURE       TYPE  TABNAME
+   T_FIELDCAT        TYPE  LVC_T_FCAT.
+
+  DATA:
+    LS_KEYFIELD      TYPE GTY_KEY_FIELDS.
+
+  FIELD-SYMBOLS:
+   <LF_FIELDCAT>     TYPE  LVC_S_FCAT.
+
+  CLEAR: GT_KEYFIELDS[], GT_FIELDCAT[].
+
+* Get field category
+  IF  T_FIELDCAT[] IS NOT INITIAL.
+    READ TABLE T_FIELDCAT INDEX 1 ASSIGNING <LF_FIELDCAT>.
+    IF <LF_FIELDCAT>-TABNAME IS INITIAL.
+      RAISE NO_STRUCTURE.
+    ELSE.
+*     Get table name and field category
+      GW_TABNAME = <LF_FIELDCAT>-TABNAME.
+      GT_FIELDCAT[] = T_FIELDCAT[].
+    ENDIF.
+  ELSEIF I_STRUCTURE IS NOT INITIAL.
+*   Get table name and field category
+    CALL FUNCTION 'LVC_FIELDCATALOG_MERGE'
+      EXPORTING
+        I_STRUCTURE_NAME       = I_STRUCTURE
+        I_INTERNAL_TABNAME     = I_STRUCTURE
+      CHANGING
+        CT_FIELDCAT            = GT_FIELDCAT
+      EXCEPTIONS
+        INCONSISTENT_INTERFACE = 1
+        PROGRAM_ERROR          = 2
+        OTHERS                 = 3.
+    IF SY-SUBRC <> 0.
+      RAISE NO_STRUCTURE.
+    ENDIF.
+    GW_TABNAME = I_STRUCTURE.
+  ENDIF.
+
+* Get all key fields
+  LOOP AT GT_FIELDCAT ASSIGNING <LF_FIELDCAT>.
+    IF <LF_FIELDCAT>-KEY = 'X'.
+      LS_KEYFIELD-TABNAME   = <LF_FIELDCAT>-TABNAME.
+      LS_KEYFIELD-FIELDNAME = <LF_FIELDCAT>-FIELDNAME.
+      APPEND LS_KEYFIELD TO GT_KEYFIELDS.
+    ENDIF.
+  ENDLOOP.
+
+ENDFORM.                    "GET_FIELDCAT
+
+*&---------------------------------------------------------------------*
+*&      Form  CREATE_TABLE_WITH_KEYS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->I_STRUCTURE       text
+*      -->T_FIELDCAT        text
+*      -->T_TABLE_CHANGED   text
+*      -->T_TABLE_ORIGINAL  text
+*      -->I_GET_ORG_DATA    text
+*----------------------------------------------------------------------*
+FORM CREATE_TABLE_WITH_KEYS.
+  DATA:
+    LT_KEYS     TYPE TABLE OF FIELDNAME,
+    LS_KEYFIELD TYPE GTY_KEY_FIELDS,
+    LT_DATA     TYPE REF TO DATA.
+
+  CLEAR LT_KEYS.
+  LOOP AT GT_KEYFIELDS INTO LS_KEYFIELD.
+    APPEND LS_KEYFIELD-FIELDNAME TO LT_KEYS.
+  ENDLOOP.
+
+  CREATE DATA LT_DATA TYPE STANDARD TABLE OF
+         (GW_TABNAME) WITH KEY (LT_KEYS).
+  ASSIGN LT_DATA->* TO <GFT_DATA_ORG>.
+  CREATE DATA LT_DATA TYPE STANDARD TABLE OF
+         (GW_TABNAME) WITH KEY (LT_KEYS).
+  ASSIGN LT_DATA->* TO <GFT_DATA_TABLE>.
+
+ENDFORM.    "CREATE_TABLE_WITH_KEYS
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_ORG_DATA
+*&---------------------------------------------------------------------*
+*       Get original data if need
+*----------------------------------------------------------------------*
+FORM GET_ORG_DATA
+  USING
+    T_TABLE_CHANGED   TYPE  ANY TABLE
+    T_TABLE_ORIGINAL  TYPE  ANY TABLE
+    I_GET_ORG_DATA    TYPE  XMARK.
+
+  DATA: LT_DATA TYPE REF TO DATA,
+        LS_DATA TYPE REF TO DATA.
+  FIELD-SYMBOLS:
+    <LF_DATA_STR>     TYPE ANY.
+
+* Create structure for current data
+  <GFT_DATA_TABLE> = T_TABLE_CHANGED.
+  <GFT_DATA_ORG> = T_TABLE_ORIGINAL.
+
+  IF  T_TABLE_ORIGINAL IS INITIAL
+  AND I_GET_ORG_DATA IS NOT INITIAL.
+*   Manually get data
+    CALL FUNCTION 'ZFM_DATA_ORIGINAL_GET'
+      EXPORTING
+        T_TABLE_CURRENT    = T_TABLE_CHANGED
+        T_FIELDCAT         = GT_FIELDCAT
+      IMPORTING
+        T_TABLE_ORIGINAL   = <GFT_DATA_ORG>
+      EXCEPTIONS
+        NO_STRUCTURE       = 1
+        CONFLICT_STRUCTURE = 2
+        NO_DATA            = 3
+        OTHERS             = 4.
+  ENDIF.
+ENDFORM.    "GET_ORG_DATA
+
+*&---------------------------------------------------------------------*
+*&      Form  MODIFY_DATA
+*&---------------------------------------------------------------------*
+*       Modify data
+*----------------------------------------------------------------------*
+FORM MODIFY_DATA  USING I_DEL_FIELD TYPE FIELDNAME.
+  DATA: LT_DATA      TYPE REF TO DATA,
+        LS_DATA      TYPE REF TO DATA,
+        LW_VALID     TYPE C,
+        LW_USING_KEY TYPE CHAR256.
+  FIELD-SYMBOLS:
+    <LF_VALUE>        TYPE ANY,
+    <LF_DATA_STR>     TYPE ANY,
+    <LF_DATA_ORG>     TYPE ANY,
+    <LFT_DATA_INSERT> TYPE TABLE,
+    <LFT_DATA_UPDATE> TYPE TABLE,
+    <LFT_DATA_DELETE> TYPE TABLE.
+
+* Create structure data
+  CREATE DATA LS_DATA LIKE LINE OF <GFT_DATA_TABLE>.
+  ASSIGN LS_DATA->* TO <LF_DATA_STR>.
+
+* Create structure of 3 tables insert, update, delete
+  CREATE DATA LT_DATA LIKE <GFT_DATA_TABLE>.
+  ASSIGN LT_DATA->* TO <LFT_DATA_DELETE>.
+
+  CREATE DATA LT_DATA LIKE <GFT_DATA_TABLE>.
+  ASSIGN LT_DATA->* TO <LFT_DATA_UPDATE>.
+
+  CREATE DATA LT_DATA LIKE <GFT_DATA_TABLE>.
+  ASSIGN LT_DATA->* TO <LFT_DATA_INSERT>.
+
+* Get change info
+  LOOP AT <GFT_DATA_TABLE> ASSIGNING <LF_DATA_STR>.
+*   Find old record
+    READ TABLE <GFT_DATA_ORG> FROM <LF_DATA_STR>
+      ASSIGNING <LF_DATA_ORG>.
+    IF SY-SUBRC IS NOT INITIAL.
+*     Not found old record, will insert
+      APPEND <LF_DATA_STR> TO <LFT_DATA_INSERT>.
+    ELSE.
+*     Found, check data change
+      IF <LF_DATA_STR> <> <LF_DATA_ORG>.
+*       Changed, will update
+        APPEND <LF_DATA_STR> TO <LFT_DATA_UPDATE>.
+      ENDIF.
+*     Found, delete to next loop
+      DELETE TABLE <GFT_DATA_ORG> FROM <LF_DATA_ORG>.
+    ENDIF.
+  ENDLOOP.
+
+* Get all remain deleted records
+  IF I_DEL_FIELD IS INITIAL.
+    APPEND LINES OF <GFT_DATA_ORG> TO <LFT_DATA_DELETE>.
+  ELSE.
+    LOOP AT <GFT_DATA_ORG> ASSIGNING <LF_DATA_STR>.
+      ASSIGN COMPONENT I_DEL_FIELD OF STRUCTURE <LF_DATA_STR>
+        TO <LF_VALUE>.
+      IF SY-SUBRC IS NOT INITIAL.
+        RAISE DEL_FIELD_NOT_EXISTS.
+      ELSE.
+        <LF_VALUE> = 'X'.
+      ENDIF.
+    ENDLOOP.
+    APPEND LINES OF <GFT_DATA_ORG> TO <LFT_DATA_UPDATE>.
+  ENDIF.
+
+* Delete in database
+  IF <LFT_DATA_DELETE> IS NOT INITIAL.
+    TRY.
+        DELETE (GW_TABNAME) FROM TABLE <LFT_DATA_DELETE>.
+      CATCH CX_SY_OPEN_SQL_DB.
+        RAISE DELETE_ERROR.
+    ENDTRY.
+    IF SY-SUBRC IS NOT INITIAL.
+      RAISE DELETE_ERROR.
+    ENDIF.
+  ENDIF.
+
+* Update in database
+  IF <LFT_DATA_UPDATE> IS NOT INITIAL.
+    TRY.
+        UPDATE (GW_TABNAME) FROM TABLE <LFT_DATA_UPDATE>.
+      CATCH CX_SY_OPEN_SQL_DB.
+        RAISE UPDATE_ERROR.
+    ENDTRY.
+    IF SY-SUBRC IS NOT INITIAL.
+      RAISE UPDATE_ERROR.
+    ENDIF.
+  ENDIF.
+* Insert in database
+  IF <LFT_DATA_INSERT> IS NOT INITIAL.
+    TRY.
+        INSERT (GW_TABNAME) FROM TABLE <LFT_DATA_INSERT>.
+      CATCH CX_SY_OPEN_SQL_DB.
+        RAISE UPDATE_ERROR.
+    ENDTRY.
+    IF SY-SUBRC IS NOT INITIAL.
+      RAISE UPDATE_ERROR.
+    ENDIF.
+  ENDIF.
+ENDFORM.                    "MODIFY_DATA
+*&---------------------------------------------------------------------*
+*&      Form GET_CC_ADDRESS
+*&---------------------------------------------------------------------*
+FORM GET_CC_ADDRESS
+  USING
+        P_NUMBER        TYPE CHAR10
+        P_NATION
+CHANGING  E_NAME          TYPE CHAR255
+  E_NAME_N_TITLE  TYPE CHAR255
+  E_NAME1         TYPE CHAR255
+  E_ADDRESS       TYPE CHAR255
+  E_ADDRESS_EN    TYPE CHAR255
+  E_TAX           TYPE CHAR255
+  E_TEL_NUMBER    TYPE CHAR255
+  E_FAX_NUMBER    TYPE CHAR255
+  E_EMAIL         TYPE CHAR255
+  E_REMARK        TYPE CHAR255
+  E_CITY          TYPE CHAR255.
+
+  DATA: LW_ADRNR        TYPE T001-ADRNR,
+        LW_TITLE        TYPE ADRC-TITLE,
+        LW_NAME1        TYPE ADRC-NAME1,
+        LW_NAME2        TYPE ADRC-NAME2,
+        LW_NAME3        TYPE ADRC-NAME3,
+        LW_NAME4        TYPE ADRC-NAME4,
+        LW_HOUSE_NUM1   TYPE ADRC-HOUSE_NUM1,
+        LW_HOUSE_NUM2   TYPE ADRC-HOUSE_NUM2,
+        LW_HOUSE_NUM3   TYPE ADRC-HOUSE_NUM3,
+        LW_STREET       TYPE ADRC-STREET,
+        LW_STR_SUPPL1   TYPE AD_STRSPP1,
+        LW_STR_SUPPL2   TYPE AD_STRSPP1,
+        LW_STR_SUPPL3   TYPE AD_STRSPP1,
+        LW_CITY1        TYPE ADRC-CITY1,
+        LW_CITY2        TYPE ADRC-CITY2,
+        LW_COUNTRY      TYPE ADRC-COUNTRY,
+        LW_COUNTRY_DESC TYPE T005T-LANDX,
+        LW_TAX          TYPE T001-STCEG,
+        LW_TEL_NUMBER   TYPE ADRC-TEL_NUMBER,
+        LW_FAX_NUMBER   TYPE ADRC-FAX_NUMBER,
+        LW_EMAIL        TYPE ADR6-SMTP_ADDR,
+        LW_REMARK       TYPE AD_REMARK1,
+        LW_NAME_CO      TYPE AD_NAME_CO,
+        LW_LOCATION     TYPE AD_LCTN,
+        LW_HOME_CITY    TYPE AD_CITY3.
+  " Lay Thong Tin Company Code
+  SELECT SINGLE
+    T001~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    T001~STCEG
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    ADRCT~REMARK
+    ADRC~NAME_CO
+    ADRC~LOCATION
+    ADRC~HOME_CITY
+  INTO
+    (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TAX,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_REMARK,
+    LW_NAME_CO,
+    LW_LOCATION,
+    LW_HOME_CITY)
+  FROM T001 INNER JOIN ADRC ON ADRC~ADDRNUMBER = T001~ADRNR AND ADRC~NATION EQ ''
+  LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = T001~ADRNR
+  LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = T001~ADRNR AND ADRCT~NATION EQ ''
+  WHERE BUKRS EQ P_NUMBER.
+  IF SY-SUBRC EQ 0.
+
+    " Ten Cong ty/Don vi tieng Viet
+    CLEAR: E_NAME.
+    CONCATENATE LW_NAME1 LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+    CONDENSE E_NAME.
+
+    " Dia chi tieng Viet : house number + Street + Street 2 + Street 3 + City
+    CLEAR: E_ADDRESS.
+    CONCATENATE LW_HOUSE_NUM1 LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_CITY1 INTO E_ADDRESS SEPARATED BY SPACE.
+    CONDENSE E_ADDRESS.
+
+    " Tel, Fax, Tax, Email
+    E_TAX = LW_TAX.
+    E_TEL_NUMBER = LW_TEL_NUMBER.
+    E_FAX_NUMBER = LW_FAX_NUMBER.
+    E_EMAIL = LW_EMAIL.
+  ENDIF.
+
+
+  " Lay Thong Tin Company Code
+  SELECT SINGLE
+    T001~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    T001~STCEG
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    ADRCT~REMARK
+    ADRC~NAME_CO
+    ADRC~LOCATION
+    ADRC~HOME_CITY
+  INTO
+    (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TAX,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_REMARK,
+    LW_NAME_CO,
+    LW_LOCATION,
+    LW_HOME_CITY)
+  FROM T001 INNER JOIN ADRC ON ADRC~ADDRNUMBER = T001~ADRNR AND ADRC~NATION EQ P_NATION
+  LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = T001~ADRNR
+  LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = T001~ADRNR AND ADRCT~NATION EQ P_NATION
+  WHERE BUKRS EQ P_NUMBER.
+  IF SY-SUBRC EQ 0.
+
+    " Ten Cong ty/Don vi tieng Viet
+    CLEAR: E_NAME_N_TITLE.
+    CONCATENATE LW_NAME1 LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME_N_TITLE SEPARATED BY SPACE.
+    CONDENSE E_NAME_N_TITLE.
+
+    E_NAME1 = LW_NAME1.
+
+    " Dia chi tieng Viet : house number + Street + Street 2 + Street 3
+    CLEAR: E_ADDRESS_EN.
+    CONCATENATE LW_HOUSE_NUM1 LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_CITY1 INTO E_ADDRESS_EN SEPARATED BY SPACE.
+    CONDENSE E_ADDRESS_EN.
+  ENDIF.
+
+  IF LW_COUNTRY IS NOT INITIAL
+    AND P_NATION IS INITIAL.
+    SELECT SINGLE
+      LANDX
+      INTO LW_COUNTRY_DESC
+      FROM T005T
+      WHERE SPRAS EQ SY-LANGU
+        AND LAND1 EQ LW_COUNTRY.
+    IF SY-SUBRC EQ 0.
+      CONCATENATE E_ADDRESS_EN `, ` LW_COUNTRY_DESC INTO E_ADDRESS_EN.
+    ENDIF.
+  ENDIF.
+
+  "Comment
+  E_REMARK = LW_REMARK.
+  E_CITY   = LW_CITY1.
+ENDFORM.                    "GET_CC_ADDRESS
+
+*&---------------------------------------------------------------------*
+*&      Form GET_CC_ADDRESS
+*&---------------------------------------------------------------------*
+FORM GET_PLANT_ADDRESS
+  USING     P_NUMBER        TYPE CHAR10
+CHANGING  E_NAME          TYPE CHAR255
+  E_NAME_N_TITLE  TYPE CHAR255
+  E_ADDRESS       TYPE CHAR255
+  E_ADDRESS_EN    TYPE CHAR255
+  E_TAX           TYPE CHAR255
+  E_TEL_NUMBER    TYPE CHAR255
+  E_FAX_NUMBER    TYPE CHAR255
+  E_EMAIL         TYPE CHAR255
+  E_REMARK         TYPE CHAR255.
+
+  DATA: LW_ADRNR      TYPE T001-ADRNR,
+        LW_TITLE      TYPE ADRC-TITLE,
+        LW_NAME1      TYPE ADRC-NAME1,
+        LW_NAME2      TYPE ADRC-NAME2,
+        LW_NAME3      TYPE ADRC-NAME3,
+        LW_NAME4      TYPE ADRC-NAME4,
+        LW_HOUSE_NUM1 TYPE ADRC-HOUSE_NUM1,
+        LW_HOUSE_NUM2 TYPE ADRC-HOUSE_NUM2,
+        LW_HOUSE_NUM3 TYPE ADRC-HOUSE_NUM3,
+        LW_STREET     TYPE ADRC-STREET,
+        LW_STR_SUPPL1 TYPE AD_STRSPP1,
+        LW_STR_SUPPL2 TYPE AD_STRSPP1,
+        LW_STR_SUPPL3 TYPE AD_STRSPP1,
+        LW_CITY1      TYPE ADRC-CITY1,
+        LW_CITY2      TYPE ADRC-CITY2,
+        LW_COUNTRY    TYPE ADRC-COUNTRY,
+        LW_TAX        TYPE T001-STCEG,
+        LW_TEL_NUMBER TYPE ADRC-TEL_NUMBER,
+        LW_FAX_NUMBER TYPE ADRC-FAX_NUMBER,
+        LW_EMAIL      TYPE ADR6-SMTP_ADDR,
+        LW_REMARK     TYPE AD_REMARK1,
+        LW_NAME_CO    TYPE AD_NAME_CO,
+        LW_LOCATION   TYPE AD_LCTN,
+        LW_HOME_CITY  TYPE AD_CITY3.
+  " Lay Thong Tin Company Code
+  SELECT SINGLE
+    T001W~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    ADRCT~REMARK
+    ADRC~NAME_CO
+    ADRC~LOCATION
+    ADRC~HOME_CITY
+  INTO
+    (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_REMARK,
+    LW_NAME_CO,
+    LW_LOCATION,
+    LW_HOME_CITY)
+  FROM T001W INNER JOIN ADRC ON ADRC~ADDRNUMBER = T001W~ADRNR AND ADRC~NATION EQ ''
+  LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = T001W~ADRNR
+  LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = T001W~ADRNR AND ADRCT~NATION EQ ''
+  WHERE WERKS EQ P_NUMBER.
+  IF SY-SUBRC EQ 0.
+    " Ten Cong ty/Don vi tieng Viet
+    CLEAR: E_NAME.
+    IF LW_NAME2 IS INITIAL AND LW_NAME3 IS INITIAL AND LW_NAME4 IS INITIAL.
+      E_NAME = LW_NAME1.
+    ELSE.
+      CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+    ENDIF.
+    CONDENSE E_NAME.
+
+    " Dia chi tieng Viet : Street + Street 4 + Street 5
+    CLEAR: E_ADDRESS.
+    CONCATENATE LW_HOUSE_NUM1 LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3  INTO E_ADDRESS SEPARATED BY SPACE.
+    CONDENSE E_ADDRESS.
+
+    " Tel, Fax, Tax, Email
+    E_TAX = LW_TAX.
+    E_TEL_NUMBER = LW_TEL_NUMBER.
+    E_FAX_NUMBER = LW_FAX_NUMBER.
+    E_EMAIL = LW_EMAIL.
+  ENDIF.
+
+
+
+
+  " Lay Thong Tin Company Code
+  SELECT SINGLE
+    T001W~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    ADRCT~REMARK
+    ADRC~NAME_CO
+    ADRC~LOCATION
+    ADRC~HOME_CITY
+  INTO
+    (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_REMARK,
+    LW_NAME_CO,
+    LW_LOCATION,
+    LW_HOME_CITY)
+  FROM T001W INNER JOIN ADRC ON ADRC~ADDRNUMBER = T001W~ADRNR AND ADRC~NATION EQ 'I'
+  LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = T001W~ADRNR
+  LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = T001W~ADRNR AND ADRCT~NATION EQ 'I'
+  WHERE WERKS EQ P_NUMBER.
+  IF SY-SUBRC EQ 0.
+
+    " Ten Cong ty/Don vi tieng Anh
+    CLEAR: E_NAME_N_TITLE.
+    IF LW_NAME2 IS INITIAL AND LW_NAME3 IS INITIAL AND LW_NAME4 IS INITIAL.
+      E_NAME_N_TITLE = LW_NAME1.
+    ELSE.
+      CONCATENATE  LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME_N_TITLE SEPARATED BY SPACE.
+    ENDIF.
+    CONDENSE E_NAME_N_TITLE.
+
+    " Dia chi tieng Anh : Street + Street 4 + Street 5
+    CLEAR: E_ADDRESS_EN.
+    CONCATENATE LW_STREET LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS_EN SEPARATED BY SPACE.
+    CONDENSE E_ADDRESS_EN.
+  ENDIF.
+
+  "Comment
+  E_REMARK = LW_REMARK.
+ENDFORM.                    "GET_CC_ADDRESS
+
+*&---------------------------------------------------------------------*
+*&      Form GET_VEN_ADDRESS
+*&---------------------------------------------------------------------*
+FORM GET_VEN_ADDRESS USING    P_NUMBER        TYPE CHAR10
+      P_BUKRS         TYPE BUKRS
+      P_BELNR         TYPE BELNR_D
+      P_GJAHR         TYPE GJAHR
+      P_ONECUS        TYPE CHAR1
+CHANGING  E_NAME          TYPE CHAR255
+  E_NAME_N_TITLE  TYPE CHAR255
+  E_NAME1         TYPE CHAR255
+  E_ADDRESS       TYPE CHAR255
+  E_ADDRESS_EN    TYPE CHAR255
+  E_TAX           TYPE CHAR255
+  E_TEL_NUMBER    TYPE CHAR255
+  E_FAX_NUMBER    TYPE CHAR255
+  E_EMAIL         TYPE CHAR255
+  E_TITLE         TYPE TEXT15
+  E_KTOKL         TYPE KTOKL_077T
+  E_KTOKL_NAME    TYPE TXT30_077T
+  E_ONECUS        TYPE CHAR1
+  E_PARTNER       TYPE BU_PARTNER
+  E_WEB           TYPE URL
+  E_BANKN         TYPE CHAR255
+  E_BRANCH         TYPE CHAR255
+  E_MOBILE        TYPE CHAR255
+  .
+
+  DATA: LW_XCPDK      TYPE LFA1-XCPDK,
+        LW_KTOKL      TYPE KTOKL_077T,
+        LW_KTOKL_NAME TYPE TXT30_077T.
+
+  DATA: LW_ADRNR        TYPE T001-ADRNR,
+        LW_LOCATION     TYPE AD_LCTN,
+        LW_TITLE        TYPE ADRC-TITLE,
+        LW_NAME1        TYPE ADRC-NAME1,
+        LW_NAME2        TYPE ADRC-NAME2,
+        LW_NAME3        TYPE ADRC-NAME3,
+        LW_NAME4        TYPE ADRC-NAME4,
+        LW_HOUSE_NUM1   TYPE ADRC-HOUSE_NUM1,
+        LW_HOUSE_NUM2   TYPE ADRC-HOUSE_NUM2,
+        LW_HOUSE_NUM3   TYPE ADRC-HOUSE_NUM3,
+        LW_STR_SUPPL1   TYPE AD_STRSPP1,
+        LW_STR_SUPPL2   TYPE AD_STRSPP1,
+        LW_STR_SUPPL3   TYPE AD_STRSPP1,
+        LW_STREET       TYPE ADRC-STREET,
+        LW_CITY1        TYPE ADRC-CITY1,
+        LW_CITY2        TYPE ADRC-CITY2,
+        LW_COUNTRY      TYPE ADRC-COUNTRY,
+        LW_COUNTRY_NAME TYPE T005T-LANDX,
+        LW_TAX          TYPE T001-STCEG,
+        LW_TEL_NUMBER   TYPE ADRC-TEL_NUMBER,
+        LW_FAX_NUMBER   TYPE ADRC-FAX_NUMBER,
+        LW_EMAIL        TYPE ADR6-SMTP_ADDR,
+        LW_WEB          TYPE URL,
+        LW_MOBILE       TYPE AD_MBNMBR1,
+        LW_E_TITLE      TYPE TEXT15.
+
+  DATA: LW_STRAS TYPE BSEC-STRAS,
+        LW_ORT01 TYPE BSEC-ORT01,
+        LW_LAND1 TYPE BSEC-LAND1,
+        LW_STCD1 TYPE BSEC-STCD1.
+
+  " Kiem Tra Loai Vendor
+  SELECT SINGLE XCPDK KTOKK
+  INTO (LW_XCPDK, LW_KTOKL)
+  FROM LFA1
+  WHERE LIFNR EQ P_NUMBER.
+
+  E_ONECUS = LW_XCPDK.
+
+  SELECT SINGLE TXT30
+  INTO LW_KTOKL_NAME
+  FROM T077Y
+  WHERE KTOKK = LW_KTOKL
+    AND SPRAS = SY-LANGU.
+
+  E_KTOKL = LW_KTOKL.
+  E_KTOKL_NAME = LW_KTOKL_NAME.
+  " Neu khong phai One Time Vendor Hoac la One Time Vendor nhung khong lay thong tin theo chung tu
+  IF LW_XCPDK NE 'X' OR P_BUKRS IS INITIAL OR P_BELNR IS INITIAL OR P_GJAHR IS INITIAL OR P_ONECUS = 'X'.
+    " Lay Thong Tin Vendor
+    SELECT  SINGLE
+    LFA1~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    LFA1~STCEG
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    LFA1~ANRED
+    ADRC~LOCATION
+    LFA1~LFURL
+    LFA1~TELF2
+    INTO (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TAX,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_E_TITLE,
+    LW_LOCATION,
+    LW_WEB,
+    LW_MOBILE
+    )
+    FROM LFA1 INNER JOIN ADRC ON ADRC~ADDRNUMBER = LFA1~ADRNR AND ADRC~NATION EQ ''
+    LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = LFA1~ADRNR
+    WHERE LIFNR EQ P_NUMBER.
+    IF SY-SUBRC EQ 0.
+      E_WEB = LW_WEB.
+      "TITLE
+      E_TITLE = LW_TITLE.
+      CONDENSE E_TITLE.
+
+      " Ten Vendor
+      CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+      IF E_NAME IS INITIAL.
+        E_NAME = LW_NAME1.
+      ENDIF.
+
+      E_NAME1 = LW_NAME1.
+      CONDENSE: E_NAME, E_NAME1.
+
+      " Dia chi
+*      CLEAR: E_ADDRESS.
+*      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS SEPARATED BY SPACE.
+
+      IF LW_COUNTRY IS NOT INITIAL.
+        SELECT SINGLE LANDX
+          INTO LW_COUNTRY_NAME
+          FROM T005T
+          WHERE SPRAS EQ SY-LANGU
+            AND LAND1 EQ LW_COUNTRY.
+      ENDIF.
+
+      " Dia chi
+      CLEAR: E_ADDRESS.
+      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 LW_CITY1 LW_COUNTRY_NAME INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE E_ADDRESS.
+
+      " Tel, Fax, Tax, Email
+*      E_TAX = LW_TAX.
+      PERFORM GET_TAX_BP_VEND USING P_NUMBER
+                              CHANGING E_TAX.
+
+      PERFORM GET_BANK_BP_VEND USING P_NUMBER
+                              CHANGING E_BANKN
+                                       E_BRANCH.
+
+      E_TEL_NUMBER = LW_TEL_NUMBER.
+      E_FAX_NUMBER = LW_FAX_NUMBER.
+      E_MOBILE     = LW_MOBILE.
+
+    ENDIF.
+
+    "tieng anh
+
+    " Lay Thong Tin Vendor
+    SELECT  SINGLE
+    LFA1~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    LFA1~STCEG
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    LFA1~ANRED
+    ADRC~LOCATION
+    LFA1~LFURL
+    LFA1~TELF2
+    INTO (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TAX,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_E_TITLE,
+    LW_LOCATION,
+    LW_WEB,
+    LW_MOBILE
+    )
+    FROM LFA1 INNER JOIN ADRC ON ADRC~ADDRNUMBER = LFA1~ADRNR AND ADRC~NATION EQ 'I'
+    LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = LFA1~ADRNR
+    WHERE LIFNR EQ P_NUMBER.
+    IF SY-SUBRC EQ 0.
+
+      " Ten Vendor
+      CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME_N_TITLE SEPARATED BY SPACE.
+      IF E_NAME_N_TITLE IS INITIAL.
+        E_NAME_N_TITLE = LW_NAME1.
+      ENDIF.
+
+      E_NAME1 = LW_NAME1.
+      CONDENSE: E_NAME, E_NAME1.
+
+      " Dia chi
+*      CLEAR: E_ADDRESS_EN.
+*      CONCATENATE LW_STREET LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS_EN SEPARATED BY SPACE.
+      IF LW_COUNTRY IS NOT INITIAL.
+        SELECT SINGLE LANDX
+          INTO LW_COUNTRY_NAME
+          FROM T005T
+          WHERE SPRAS EQ SY-LANGU
+            AND LAND1 EQ LW_COUNTRY.
+      ENDIF.
+
+      " Dia chi
+      CLEAR: E_ADDRESS.
+      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 LW_CITY1 LW_COUNTRY_NAME INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE E_ADDRESS_EN.
+    ENDIF.
+
+    LW_EMAIL = E_EMAIL.
+    PERFORM GET_EMAIL_BP_VEND
+      USING P_NUMBER
+      CHANGING LW_EMAIL
+               E_PARTNER.
+
+  ELSE.
+    SELECT  SINGLE
+    ANRED AS TITLE
+    NAME1
+    NAME2
+    NAME3
+    NAME4
+    STRAS
+    ORT01
+    LAND1
+    STCD1
+    ANRED
+    INTAD
+    INTO (LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_STRAS,
+    LW_ORT01,
+    LW_LAND1,
+    LW_STCD1,
+    LW_E_TITLE,
+    LW_EMAIL)
+    FROM  BSEC
+    WHERE BUKRS = P_BUKRS
+    AND GJAHR = P_GJAHR
+    AND BELNR = P_BELNR.
+
+    SELECT  SINGLE
+    ANRED AS TITLE
+    NAME1
+    NAME2
+    NAME3
+    NAME4
+    STRAS
+    ORT01
+    LAND1
+    STCD1
+    ANRED
+    INTAD
+    INTO (LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_STRAS,
+    LW_ORT01,
+    LW_LAND1,
+    LW_STCD1,
+    LW_E_TITLE,
+    LW_EMAIL)
+    FROM  VBSEC
+    WHERE AUSBK = P_BUKRS
+    AND GJAHR = P_GJAHR
+    AND BELNR = P_BELNR.
+
+    "TITLE
+    E_TITLE = LW_E_TITLE.
+    CONDENSE E_TITLE.
+
+    " Ten Vendor One time Name = Name 1 + Name 2 + Name 3 + Name 4
+    CLEAR: E_NAME.
+    CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+    IF E_NAME IS INITIAL.
+      E_NAME = LW_NAME1 .
+    ENDIF.
+    E_NAME1 = LW_NAME1.
+    CONDENSE: E_NAME, E_NAME1.
+
+    " Dia chi
+
+*    CLEAR: E_ADDRESS.
+*    CONCATENATE LW_STREET LW_CITY1 INTO E_ADDRESS SEPARATED BY SPACE.
+    IF LW_LAND1 IS NOT INITIAL.
+      SELECT SINGLE LANDX
+        INTO LW_COUNTRY_NAME
+        FROM T005T
+        WHERE SPRAS EQ SY-LANGU
+          AND LAND1 EQ LW_LAND1.
+    ENDIF.
+
+    " Dia chi
+    CLEAR: E_ADDRESS.
+    CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 LW_CITY1 LW_COUNTRY_NAME INTO E_ADDRESS SEPARATED BY SPACE.
+    CONDENSE E_ADDRESS.
+*
+    IF LW_XCPDK EQ 'X'.
+      CLEAR: E_ADDRESS.
+      CONCATENATE LW_STRAS LW_ORT01 INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE E_ADDRESS.
+    ENDIF.
+
+    " Tel, Fax, Tax, Email
+    E_TAX = LW_STCD1.
+    E_TEL_NUMBER = ''.
+    E_FAX_NUMBER = ''.
+  ENDIF.
+
+  E_EMAIL = LW_EMAIL.
+
+ENDFORM.                    "GET_VEN_ADDRESS
+
+
+*&---------------------------------------------------------------------*
+*&      Form GET_CUS_ADDRESS
+*&---------------------------------------------------------------------*
+FORM GET_CUS_ADDRESS USING    P_NUMBER        TYPE CHAR10
+      P_BUKRS         TYPE BUKRS
+      P_BELNR         TYPE BELNR_D
+      P_GJAHR         TYPE GJAHR
+      P_ONCECUS       TYPE CHAR01
+CHANGING E_NAME          TYPE CHAR255
+  E_NAME_N_TITLE  TYPE CHAR255
+  E_NAME1         TYPE CHAR255
+  E_ADDRESS       TYPE CHAR255
+  E_ADDRESS_EN       TYPE CHAR255
+  E_TAX           TYPE CHAR255
+  E_TEL_NUMBER    TYPE CHAR255
+  E_FAX_NUMBER    TYPE CHAR255
+  E_EMAIL         TYPE CHAR255
+  E_EMAIL1         TYPE CHAR255
+  E_TITLE         TYPE TEXT15
+  E_KTOKL         TYPE KTOKL_077T
+  E_KTOKL_NAME    TYPE TXT30_077T
+  E_PARTNER       TYPE BU_PARTNER
+  E_ONECUS        TYPE CHAR1.
+
+  DATA: LW_XCPDK      TYPE KNA1-XCPDK,
+        LW_KTOKL      TYPE KTOKL_077T,
+        LW_KTOKL_NAME TYPE TXT30_077T.
+
+  DATA: LW_ADRNR        TYPE T001-ADRNR,
+        LW_LOCATION     TYPE AD_LCTN,
+        LW_TITLE        TYPE ADRC-TITLE,
+        LW_NAME1        TYPE ADRC-NAME1,
+        LW_NAME2        TYPE ADRC-NAME2,
+        LW_NAME3        TYPE ADRC-NAME3,
+        LW_NAME4        TYPE ADRC-NAME4,
+        LW_HOUSE_NUM1   TYPE ADRC-HOUSE_NUM1,
+        LW_HOUSE_NUM2   TYPE ADRC-HOUSE_NUM2,
+        LW_HOUSE_NUM3   TYPE ADRC-HOUSE_NUM3,
+        LW_STR_SUPPL1   TYPE AD_STRSPP1,
+        LW_STR_SUPPL2   TYPE AD_STRSPP1,
+        LW_STR_SUPPL3   TYPE AD_STRSPP1,
+        LW_STREET       TYPE ADRC-STREET,
+        LW_CITY1        TYPE ADRC-CITY1,
+        LW_CITY2        TYPE ADRC-CITY2,
+        LW_COUNTRY      TYPE ADRC-COUNTRY,
+        LW_COUNTRY_NAME TYPE T005T-LANDX,
+        LW_TAX          TYPE T001-STCEG,
+        LW_TEL_NUMBER   TYPE ADRC-TEL_NUMBER,
+        LW_FAX_NUMBER   TYPE ADRC-FAX_NUMBER,
+        LW_EMAIL        TYPE CHAR255,
+        LW_E_TITLE      TYPE TEXT15.
+
+  DATA: LW_STRAS TYPE BSEC-STRAS,
+        LW_ORT01 TYPE BSEC-ORT01,
+        LW_LAND1 TYPE BSEC-LAND1,
+        LW_STCD1 TYPE BSEC-STCD1.
+*  DATA: LW_ADRNR       TYPE ADRNR.
+  " Kiem Tra Loai Customer
+  SELECT SINGLE XCPDK KTOKD
+  INTO (LW_XCPDK, LW_KTOKL)
+  FROM KNA1
+  WHERE KUNNR EQ P_NUMBER.
+
+  E_ONECUS = LW_XCPDK.
+
+  SELECT SINGLE TXT30
+  INTO LW_KTOKL_NAME
+  FROM T077X
+  WHERE KTOKD = LW_KTOKL
+    AND SPRAS = SY-LANGU.
+
+  E_KTOKL = LW_KTOKL.
+  E_KTOKL_NAME = LW_KTOKL_NAME.
+
+  " Neu khong phai One Time Customer Hoac la One Time Customer nhung khong lay thong tin theo chung tu
+  IF LW_XCPDK NE 'X' OR P_BUKRS IS INITIAL OR P_BELNR IS INITIAL OR P_GJAHR IS INITIAL OR P_ONCECUS = 'X'.
+    " Lay Thong Tin Customer
+    SELECT  SINGLE
+    KNA1~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    KNA1~STCEG
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    KNA1~ANRED
+    ADRC~LOCATION
+    INTO (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TAX,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_E_TITLE,
+    LW_LOCATION)
+    FROM KNA1 INNER JOIN ADRC ON ADRC~ADDRNUMBER = KNA1~ADRNR AND ADRC~NATION EQ ''
+    LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = KNA1~ADRNR
+    WHERE KUNNR EQ P_NUMBER.
+    IF SY-SUBRC EQ 0.
+
+      "TITLE
+      E_TITLE = LW_TITLE.
+      CONDENSE E_TITLE.
+
+      " Ten Customer
+      CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+      IF E_NAME IS INITIAL.
+        E_NAME = LW_NAME1.
+      ENDIF.
+
+      E_NAME1 = LW_NAME1.
+      CONDENSE: E_NAME, E_NAME1.
+
+      " Dia chi
+*      CLEAR: E_ADDRESS.
+*      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS SEPARATED BY SPACE.
+      IF LW_COUNTRY IS NOT INITIAL.
+        SELECT SINGLE LANDX
+          INTO LW_COUNTRY_NAME
+          FROM T005T
+          WHERE SPRAS EQ SY-LANGU
+            AND LAND1 EQ LW_COUNTRY.
+      ENDIF.
+
+      " Dia chi
+      CLEAR: E_ADDRESS.
+*      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 LW_CITY1 LW_COUNTRY_NAME INTO E_ADDRESS SEPARATED BY SPACE.
+      "thay đổi cách lấy street của Customer không có lấy thêm trường city + description của Country
+      "Binh.Tran
+      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE E_ADDRESS.
+
+      " Tel, Fax, Tax, Email
+*      E_TAX = LW_TAX.
+      PERFORM GET_TAX_BP_CUST USING P_NUMBER
+                              CHANGING E_TAX.
+
+      E_TEL_NUMBER = LW_TEL_NUMBER.
+      E_FAX_NUMBER = LW_FAX_NUMBER.
+    ENDIF.
+
+
+    " Lay Thong Tin Customer
+    "tên tieng Anh
+    SELECT  SINGLE
+    KNA1~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    KNA1~STCEG
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR
+    KNA1~ANRED
+    ADRC~LOCATION
+    INTO (LW_ADRNR,
+    LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_HOUSE_NUM1,
+    LW_HOUSE_NUM2,
+    LW_HOUSE_NUM3,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_STREET,
+    LW_CITY1,
+    LW_CITY2,
+    LW_COUNTRY,
+    LW_TAX,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER,
+    LW_EMAIL,
+    LW_E_TITLE,
+    LW_LOCATION)
+    FROM KNA1 INNER JOIN ADRC ON ADRC~ADDRNUMBER = KNA1~ADRNR AND ADRC~NATION EQ 'I'
+    LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = KNA1~ADRNR
+    WHERE KUNNR EQ P_NUMBER.
+
+    IF SY-SUBRC EQ 0.
+      " Ten Vendor
+      CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME_N_TITLE SEPARATED BY SPACE.
+      IF E_NAME_N_TITLE IS INITIAL.
+        E_NAME_N_TITLE = LW_NAME1.
+      ENDIF.
+
+      E_NAME1 = LW_NAME1.
+      CONDENSE: E_NAME, E_NAME1.
+
+      " Dia chi
+*      CLEAR: E_ADDRESS_EN.
+*      CONCATENATE LW_STREET LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS_EN SEPARATED BY SPACE.
+      IF LW_COUNTRY IS NOT INITIAL.
+        SELECT SINGLE LANDX
+          INTO LW_COUNTRY_NAME
+          FROM T005T
+          WHERE SPRAS EQ SY-LANGU
+            AND LAND1 EQ LW_COUNTRY.
+      ENDIF.
+
+      " Dia chi
+      CLEAR: E_ADDRESS.
+*      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 LW_CITY1 LW_COUNTRY_NAME INTO E_ADDRESS SEPARATED BY SPACE.
+      CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE E_ADDRESS_EN.
+    ENDIF.
+
+    E_EMAIL1 = LW_EMAIL.
+    LW_EMAIL = E_EMAIL.
+    PERFORM GET_EMAIL_BP_CUST
+      USING P_NUMBER
+      CHANGING LW_EMAIL
+               E_PARTNER.
+  ELSE.
+    SELECT  SINGLE
+    ANRED AS TITLE
+    NAME1
+    NAME2
+    NAME3
+    NAME4
+    STRAS
+    ORT01
+    LAND1
+    STCD1
+    ANRED
+    ADRNR
+    INTAD
+    INTO (LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_STRAS,
+    LW_ORT01,
+    LW_LAND1,
+    LW_STCD1,
+    LW_E_TITLE,
+    LW_ADRNR,
+    LW_EMAIL)
+    FROM  BSEC
+    WHERE BUKRS = P_BUKRS
+    AND GJAHR = P_GJAHR
+    AND BELNR = P_BELNR.
+    IF SY-SUBRC <> 0.
+      SELECT  SINGLE
+            ADRC~TITLE
+            ADRC~NAME1
+            ADRC~NAME2
+            ADRC~NAME3
+            ADRC~NAME4
+            ADRC~HOUSE_NUM1
+            ADRC~HOUSE_NUM2
+            ADRC~HOUSE_NUM3
+            ADRC~STR_SUPPL1
+            ADRC~STR_SUPPL2
+            ADRC~STR_SUPPL3
+            ADRC~STREET
+            ADRC~CITY1
+            ADRC~CITY2
+            ADRC~COUNTRY
+            ADRC~TEL_NUMBER
+            ADRC~FAX_NUMBER
+            ADR6~SMTP_ADDR
+            INTO (LW_TITLE,
+            LW_NAME1,
+            LW_NAME2,
+            LW_NAME3,
+            LW_NAME4,
+            LW_HOUSE_NUM1,
+            LW_HOUSE_NUM2,
+            LW_HOUSE_NUM3,
+            LW_STR_SUPPL1,
+            LW_STR_SUPPL2,
+            LW_STR_SUPPL3,
+            LW_STREET,
+            LW_CITY1,
+            LW_CITY2,
+            LW_COUNTRY,
+            LW_TEL_NUMBER,
+            LW_FAX_NUMBER,
+            LW_EMAIL)
+         FROM ADRC "ON ADRC~ADDRNUMBER = BSEC~ADRNR
+         LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = ADRC~ADDRNUMBER
+         WHERE ADRC~ADDRNUMBER = LW_ADRNR.
+    ENDIF.
+
+
+    SELECT  SINGLE
+    ANRED AS TITLE
+    NAME1
+    NAME2
+    NAME3
+    NAME4
+    STRAS
+    ORT01
+    LAND1
+    STCD1
+    ANRED
+    INTAD
+    INTO (LW_TITLE,
+    LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_STRAS,
+    LW_ORT01,
+    LW_LAND1,
+    LW_STCD1,
+    LW_E_TITLE,
+    LW_EMAIL)
+    FROM  VBSEC
+    WHERE AUSBK = P_BUKRS
+    AND GJAHR = P_GJAHR
+    AND BELNR = P_BELNR.
+
+    "TITLE
+    E_TITLE = LW_E_TITLE.
+    CONDENSE E_TITLE.
+
+    " Ten Customer One time Name = Name 1 + Name 2 + Name 3 + Name 4
+    CLEAR: E_NAME.
+    CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+    IF E_NAME IS INITIAL.
+      E_NAME = LW_NAME1 .
+    ENDIF.
+    E_NAME1 = LW_NAME1.
+    CONDENSE: E_NAME, E_NAME1.
+
+    " Dia chi
+*
+*    CLEAR: E_ADDRESS.
+*    CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS SEPARATED BY SPACE.
+    IF LW_LAND1 IS NOT INITIAL.
+      SELECT SINGLE LANDX
+        INTO LW_COUNTRY_NAME
+        FROM T005T
+        WHERE SPRAS EQ SY-LANGU
+          AND LAND1 EQ LW_LAND1.
+    ENDIF.
+
+    " Dia chi
+    CLEAR: E_ADDRESS.
+*    CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 LW_CITY1 LW_COUNTRY_NAME INTO E_ADDRESS SEPARATED BY SPACE.
+    CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION LW_CITY2 INTO E_ADDRESS SEPARATED BY SPACE.
+    CONDENSE E_ADDRESS.
+*
+    IF LW_XCPDK EQ 'X'.
+      CLEAR: E_ADDRESS.
+      CONCATENATE LW_STRAS LW_ORT01 INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE E_ADDRESS.
+    ENDIF.
+
+    " Tel, Fax, Tax, Email
+    E_TAX = LW_STCD1.
+    E_TEL_NUMBER = ''.
+    E_FAX_NUMBER = ''.
+  ENDIF.
+
+  E_EMAIL = LW_EMAIL.
+  REPLACE 'VN' IN E_TAX WITH ''.
+ENDFORM.                    "GET_CUS_ADDRESS
+
+*&---------------------------------------------------------------------*
+*&      Form GET_CC_ADDRESS
+*&---------------------------------------------------------------------*
+FORM GET_SHIPPING_ADDRESS
+  USING
+        P_NUMBER        TYPE CHAR10
+CHANGING  E_NAME          TYPE CHAR255
+  E_NAME_N_TITLE  TYPE CHAR255
+  E_ADDRESS       TYPE CHAR255
+  E_ADDRESS_EN    TYPE CHAR255
+  E_TEL_NUMBER    TYPE CHAR255
+  E_FAX_NUMBER    TYPE CHAR255
+  E_REMARK        TYPE CHAR255.
+
+  DATA: LW_ADRNR      TYPE T001-ADRNR,
+        LW_TITLE      TYPE ADRC-TITLE,
+        LW_NAME1      TYPE ADRC-NAME1,
+        LW_NAME2      TYPE ADRC-NAME2,
+        LW_NAME3      TYPE ADRC-NAME3,
+        LW_NAME4      TYPE ADRC-NAME4,
+        LW_STREET     TYPE ADRC-STREET,
+        LW_STR_SUPPL1 TYPE AD_STRSPP1,
+        LW_STR_SUPPL2 TYPE AD_STRSPP1,
+        LW_STR_SUPPL3 TYPE AD_STRSPP1,
+        LW_CITY1      TYPE ADRC-CITY1,
+        LW_CITY2      TYPE ADRC-CITY2,
+        LW_COUNTRY    TYPE ADRC-COUNTRY,
+        LW_TAX        TYPE T001-STCEG,
+        LW_TEL_NUMBER TYPE ADRC-TEL_NUMBER,
+        LW_FAX_NUMBER TYPE ADRC-FAX_NUMBER,
+        LW_EMAIL      TYPE ADR6-SMTP_ADDR,
+        LW_REMARK     TYPE AD_REMARK1,
+        LW_NAME_CO    TYPE AD_NAME_CO,
+        LW_LOCATION   TYPE AD_LCTN,
+        LW_HOME_CITY  TYPE AD_CITY3.
+  " Lay Thong Tin Company Code
+  SELECT SINGLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~STREET
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~LOCATION
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+  INTO
+    (LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_STREET,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_LOCATION,
+    LW_TEL_NUMBER,
+    LW_FAX_NUMBER)
+  FROM TVST INNER JOIN ADRC ON ADRC~ADDRNUMBER   = TVST~ADRNR AND ADRC~NATION EQ ''
+  WHERE VSTEL EQ P_NUMBER.
+
+  " Ten shipping point tieng Viet
+  CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME SEPARATED BY SPACE.
+  IF E_NAME IS INITIAL.
+    E_NAME = LW_NAME1.
+  ENDIF.
+  CONDENSE: E_NAME.
+
+  " Dia chi
+  CLEAR: E_ADDRESS.
+  CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS SEPARATED BY SPACE.
+  CONDENSE E_ADDRESS.
+
+  " Tel
+  CLEAR E_TEL_NUMBER.
+  E_TEL_NUMBER = LW_TEL_NUMBER.
+  CONDENSE LW_TEL_NUMBER.
+
+  " Fax
+  CLEAR E_FAX_NUMBER.
+  E_FAX_NUMBER = LW_FAX_NUMBER.
+  CONDENSE LW_FAX_NUMBER.
+
+  " Lay Thong Tin Company Code
+  SELECT SINGLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~STREET
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~LOCATION
+    ADRCT~REMARK
+  INTO
+    (LW_NAME1,
+    LW_NAME2,
+    LW_NAME3,
+    LW_NAME4,
+    LW_STREET,
+    LW_STR_SUPPL1,
+    LW_STR_SUPPL2,
+    LW_STR_SUPPL3,
+    LW_LOCATION,
+    LW_REMARK)
+  FROM TVST INNER JOIN ADRC ON ADRC~ADDRNUMBER  = TVST~ADRNR AND ADRC~NATION EQ 'I'
+            LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = TVST~ADRNR AND ADRCT~NATION EQ 'I'
+  WHERE VSTEL EQ P_NUMBER.
+
+  " Ten shipping point tieng Viet
+  CONCATENATE LW_NAME2 LW_NAME3 LW_NAME4 INTO E_NAME_N_TITLE SEPARATED BY SPACE.
+  IF E_NAME_N_TITLE IS INITIAL.
+    E_NAME_N_TITLE = LW_NAME1.
+  ENDIF.
+  CONDENSE: E_NAME_N_TITLE.
+
+  " Dia chi
+  CLEAR: E_ADDRESS_EN.
+  CONCATENATE LW_STREET LW_STR_SUPPL1 LW_STR_SUPPL2 LW_STR_SUPPL3 LW_LOCATION INTO E_ADDRESS_EN SEPARATED BY SPACE.
+  CONDENSE E_ADDRESS_EN.
+
+  CLEAR E_REMARK.
+  E_REMARK = LW_REMARK.
+ENDFORM.                    "GET_SHIPPING_ADDRESS
+
+**
+***&---------------------------------------------------------------------*
+***&      Form GET_CC_ADDRESS
+***&---------------------------------------------------------------------*
+FORM GET_CC_PROFILE_N TABLES    LR_OBJECT
+                                E_T_EXPORT  STRUCTURE ZCORE_ST_GET_PROFILE
+                      CHANGING  I_S_EXPORT  TYPE ZCORE_ST_GET_PROFILE .
+
+  " Lay Thong Tin Company Code
+  SELECT
+    T001~BUKRS AS OBJECT
+    T001~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    T001~STCEG AS TAX
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR AS EMAIL
+    ADRCT~REMARK AS E_REMARK
+    ADRC~NAME_CO
+    ADRC~LOCATION
+    ADRC~HOME_CITY
+    T001~ORT01 "City
+    ADRC~TEL_EXTENS
+    ADRC~FAX_EXTENS
+    ADRC~EXTENSION1     "QuynhNLT add 08.01.2015
+  INTO CORRESPONDING FIELDS OF TABLE E_T_EXPORT
+  FROM T001 INNER JOIN ADRC ON ADRC~ADDRNUMBER = T001~ADRNR
+            LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = T001~ADRNR
+            LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = T001~ADRNR
+  WHERE BUKRS IN LR_OBJECT.
+
+  LOOP AT E_T_EXPORT ASSIGNING <FS_PROFILE>.
+    " Ten Cong ty/Don vi tieng Viet
+    CLEAR: <FS_PROFILE>-E_NAME.
+*    CONCATENATE <FS_PROFILE>-NAME1 <FS_PROFILE>-NAME2 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE. "13.12.2015 Removed by DatPT25
+    CONCATENATE <FS_PROFILE>-NAME1 <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE. "13.12.2015 Updated by DatPT25 v1.2
+    CONDENSE <FS_PROFILE>-E_NAME.
+*
+*  " Ten Cong ty/Don vi tieng ANH
+    CLEAR: <FS_PROFILE>-E_NAME_EN.
+*    CONCATENATE <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME_EN SEPARATED BY SPACE. "13.12.2015 Removed by DatPT25
+    <FS_PROFILE>-E_NAME_EN = <FS_PROFILE>-NAME4. "13.12.2015 Updated by DatPT25 v1.2
+    CONDENSE <FS_PROFILE>-E_NAME_EN.
+*
+*
+*  " Dia chi tieng Viet : Street house number + Street 2 + Street 3 + Street 4 + City
+    CLEAR: <FS_PROFILE>-E_ADDRESS.
+    CONCATENATE <FS_PROFILE>-STREET <FS_PROFILE>-STR_SUPPL1 <FS_PROFILE>-STR_SUPPL2 <FS_PROFILE>-STR_SUPPL3 <FS_PROFILE>-CITY1 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+    CONDENSE <FS_PROFILE>-E_ADDRESS.
+*
+*  " Dia chi tieng Anh : C/o + Street 5 + Other city
+    CLEAR: <FS_PROFILE>-E_ADDRESS_EN.
+    CONCATENATE <FS_PROFILE>-NAME_CO <FS_PROFILE>-LOCATION <FS_PROFILE>-HOME_CITY INTO <FS_PROFILE>-E_ADDRESS_EN SEPARATED BY SPACE.
+    CONDENSE <FS_PROFILE>-E_ADDRESS_EN.
+*
+*  " Tel, Fax, Tax, Email
+    <FS_PROFILE>-E_TAX        = <FS_PROFILE>-TAX.
+    <FS_PROFILE>-E_TEL_NUMBER = <FS_PROFILE>-TEL_NUMBER.
+    <FS_PROFILE>-E_FAX_NUMBER = <FS_PROFILE>-FAX_NUMBER.
+    <FS_PROFILE>-E_EMAIL      = <FS_PROFILE>-EMAIL.
+    AT LAST.
+      I_S_EXPORT = <FS_PROFILE>.
+    ENDAT.
+  ENDLOOP.
+ENDFORM.                    "GET_CC_ADDRESS
+**
+***&---------------------------------------------------------------------*
+***&      Form GET_PLANT_PROFILE_PVCFC
+***&---------------------------------------------------------------------*
+FORM GET_PLANT_PROFILE_N TABLES     LR_OBJECT
+                                    E_T_EXPORT  STRUCTURE ZCORE_ST_GET_PROFILE
+                         CHANGING   I_S_EXPORT  TYPE ZCORE_ST_GET_PROFILE .
+  " Lay Thong Tin Company Code
+  SELECT
+    T001W~WERKS AS OBJECT
+    T001W~ADRNR
+    ADRC~TITLE
+    ADRC~NAME1
+    ADRC~NAME2
+    ADRC~NAME3
+    ADRC~NAME4
+    ADRC~HOUSE_NUM1
+    ADRC~HOUSE_NUM2
+    ADRC~HOUSE_NUM3
+    ADRC~STR_SUPPL1
+    ADRC~STR_SUPPL2
+    ADRC~STR_SUPPL3
+    ADRC~STREET
+    ADRC~CITY1
+    ADRC~CITY2
+    ADRC~COUNTRY
+    ADRC~TEL_NUMBER
+    ADRC~FAX_NUMBER
+    ADR6~SMTP_ADDR AS EMAIL
+    ADRCT~REMARK
+    ADRC~NAME_CO
+    ADRC~LOCATION
+    ADRC~HOME_CITY
+      INTO CORRESPONDING FIELDS OF TABLE E_T_EXPORT
+  FROM T001W INNER JOIN ADRC ON ADRC~ADDRNUMBER = T001W~ADRNR
+              LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = T001W~ADRNR
+              LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = T001W~ADRNR
+  WHERE WERKS IN LR_OBJECT.
+
+  LOOP AT E_T_EXPORT ASSIGNING <FS_PROFILE>.
+    " Ten Cong ty/Don vi tieng Viet
+    CLEAR: <FS_PROFILE>-E_NAME.
+*    CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4  INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE. "13.12.2015 Removed by DatPT25
+    CONCATENATE <FS_PROFILE>-NAME1 <FS_PROFILE>-NAME2 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE. "13.12.2015 Updated by DatPT25 v1.2
+    CONDENSE <FS_PROFILE>-E_NAME.
+
+    AT LAST.
+      I_S_EXPORT = <FS_PROFILE>.
+    ENDAT.
+  ENDLOOP.
+
+ENDFORM.
+FORM GET_CUS_PROFILE_N  TABLES    LR_OBJECT
+                                  E_T_EXPORT  STRUCTURE ZCORE_ST_GET_PROFILE
+                        USING     I_BUKRS     TYPE BUKRS
+                                  I_GJAHR     TYPE GJAHR
+                                  I_BELNR     TYPE BELNR_D
+                                  I_BUZEI     TYPE BUZEI
+                        CHANGING  I_S_EXPORT  TYPE ZCORE_ST_GET_PROFILE.
+  SELECT
+  KNA1~KUNNR AS OBJECT
+  KNA1~ADRNR
+  KNA1~ANRED
+  KNA1~STCEG AS TAX
+  KNA1~XCPDK
+  KNA1~KTOKD AS KTOKL
+  ADRC~TITLE
+  ADRC~NAME1
+  ADRC~NAME2
+  ADRC~NAME3
+  ADRC~NAME4
+  ADRC~HOUSE_NUM1
+  ADRC~HOUSE_NUM2
+  ADRC~HOUSE_NUM3
+  ADRC~STR_SUPPL1
+  ADRC~STR_SUPPL2
+  ADRC~STR_SUPPL3
+  ADRC~STREET
+  ADRC~CITY1
+  ADRC~CITY2
+  ADRC~COUNTRY
+  ADRC~TEL_NUMBER
+  ADRC~FAX_NUMBER
+  ADR6~SMTP_ADDR
+  ADRC~PO_BOX
+  ADRC~POST_CODE1
+  ADRC~POST_CODE2
+  ADRC~POST_CODE3
+  ADRC~PO_BOX_LOBBY
+  ADRC~LOCATION
+  INTO CORRESPONDING FIELDS OF TABLE E_T_EXPORT
+  FROM KNA1 INNER JOIN ADRC ON ADRC~ADDRNUMBER = KNA1~ADRNR
+            LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = KNA1~ADRNR
+  WHERE KUNNR IN LR_OBJECT.
+
+  IF I_BELNR IS NOT INITIAL.
+    SELECT SINGLE
+    BUKRS  AS  I_BUKRS
+    GJAHR  AS  I_GJAHR
+    BELNR  AS  I_BELNR
+    BUZEI  AS  I_BUZEI
+    ANRED
+    NAME1
+    NAME2
+    NAME3
+    NAME4
+    STRAS
+    ORT01
+    LAND1
+    STCD1
+    ANRED
+    ADRNR
+    INTO CORRESPONDING FIELDS OF I_S_EXPORT
+    FROM  BSEC
+    WHERE BUKRS EQ I_BUKRS
+      AND GJAHR EQ I_GJAHR
+      AND BELNR EQ I_BELNR
+      AND BUZEI EQ I_BUZEI.
+
+    IF SY-SUBRC NE 0.
+      SELECT SINGLE
+      AUSBK  AS  I_BUKRS
+      GJAHR  AS  I_GJAHR
+      BELNR  AS  I_BELNR
+      BUZEI  AS  I_BUZEI
+      ANRED
+      NAME1
+      NAME2
+      NAME3
+      NAME4
+      STRAS
+      ORT01
+      LAND1
+      STCD1
+      ANRED
+      INTO CORRESPONDING FIELDS OF I_S_EXPORT
+      FROM  VBSEC
+      WHERE AUSBK EQ I_BUKRS
+        AND GJAHR EQ I_GJAHR
+        AND BELNR EQ I_BELNR
+        AND BUZEI EQ I_BUZEI.
+      IF SY-SUBRC NE 0.
+        SELECT SINGLE
+        BUKRS  AS  I_BUKRS
+        GJAHR  AS  I_GJAHR
+        BELNR  AS  I_BELNR
+        BUZEI  AS  I_BUZEI
+        ANRED
+        NAME1
+        NAME2
+        NAME3
+        NAME4
+        STRAS
+        ORT01
+        LAND1
+        STCD1
+        ANRED
+        ADRNR
+        INTO CORRESPONDING FIELDS OF I_S_EXPORT
+        FROM  BSEC
+        WHERE BUKRS EQ I_BUKRS
+          AND GJAHR EQ I_GJAHR
+          AND BELNR EQ I_BELNR.
+        IF SY-SUBRC NE 0.
+          SELECT SINGLE
+          AUSBK  AS  I_BUKRS
+          GJAHR  AS  I_GJAHR
+          BELNR  AS  I_BELNR
+          BUZEI  AS  I_BUZEI
+          ANRED
+          NAME1
+          NAME2
+          NAME3
+          NAME4
+          STRAS
+          ORT01
+          LAND1
+          STCD1
+          ANRED
+          INTO CORRESPONDING FIELDS OF I_S_EXPORT
+          FROM  VBSEC
+          WHERE AUSBK EQ I_BUKRS
+            AND GJAHR EQ I_GJAHR
+            AND BELNR EQ I_BELNR.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+  ENDIF.
+
+  LOOP AT E_T_EXPORT ASSIGNING <FS_PROFILE>.
+    <FS_PROFILE>-E_KTOKL = <FS_PROFILE>-KTOKL.
+
+    IF <FS_PROFILE>-XCPDK NE 'X'.
+*    "TITLE
+      <FS_PROFILE>-E_TITLE = <FS_PROFILE>-ANRED.
+      CONDENSE <FS_PROFILE>-E_TITLE.
+
+      " Ten Customer
+      CLEAR: <FS_PROFILE>-E_NAME.
+      IF <FS_PROFILE>-NAME2 IS INITIAL AND <FS_PROFILE>-NAME3 IS INITIAL AND <FS_PROFILE>-NAME4 IS INITIAL.
+        <FS_PROFILE>-E_NAME = <FS_PROFILE>-NAME1.
+      ELSE.
+        CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+      ENDIF.
+
+*    E_NAME1 = I_S_EXPORT-NAME1.
+      CONDENSE: <FS_PROFILE>-E_NAME.
+
+      CLEAR: <FS_PROFILE>-E_NAME_EN.
+      IF <FS_PROFILE>-NAME2 IS INITIAL AND <FS_PROFILE>-NAME3 IS INITIAL AND <FS_PROFILE>-NAME4 IS INITIAL.
+        <FS_PROFILE>-E_NAME_EN = <FS_PROFILE>-NAME1.
+      ELSE.
+        CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME_EN SEPARATED BY SPACE.
+      ENDIF.
+
+      CONDENSE <FS_PROFILE>-E_NAME_EN.
+
+      " Dia chi
+      CLEAR: <FS_PROFILE>-E_ADDRESS.
+      CONCATENATE <FS_PROFILE>-STREET <FS_PROFILE>-STR_SUPPL1 <FS_PROFILE>-STR_SUPPL2 <FS_PROFILE>-STR_SUPPL3  INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE <FS_PROFILE>-E_ADDRESS.
+
+      " Tel, Fax, Tax, Email
+      <FS_PROFILE>-E_TAX         = <FS_PROFILE>-TAX.
+      <FS_PROFILE>-E_TEL_NUMBER  = <FS_PROFILE>-TEL_NUMBER.
+      <FS_PROFILE>-E_FAX_NUMBER  = <FS_PROFILE>-FAX_NUMBER.
+      <FS_PROFILE>-E_EMAIL       = <FS_PROFILE>-EMAIL.
+
+    ELSE.
+      IF I_S_EXPORT IS INITIAL.
+*    "TITLE
+        <FS_PROFILE>-E_TITLE = <FS_PROFILE>-ANRED.
+        CONDENSE <FS_PROFILE>-E_TITLE.
+
+        CLEAR: <FS_PROFILE>-E_NAME.
+        " Ten Customer One time Name = Name 1 + Name 2 + Name 3 + Name 4
+        IF <FS_PROFILE>-NAME2 IS INITIAL AND <FS_PROFILE>-NAME3 IS INITIAL AND <FS_PROFILE>-NAME4 IS INITIAL.
+          <FS_PROFILE>-E_NAME = <FS_PROFILE>-NAME1.
+        ELSE.
+          CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+        ENDIF.
+
+*    E_NAME1 = I_S_EXPORT-NAME1.
+        CONDENSE: <FS_PROFILE>-E_NAME.
+
+        " Dia chi
+
+        CLEAR: <FS_PROFILE>-E_ADDRESS.
+        CONCATENATE <FS_PROFILE>-STREET <FS_PROFILE>-CITY1 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+        CONDENSE <FS_PROFILE>-E_ADDRESS.
+*
+        IF <FS_PROFILE>-XCPDK EQ 'X'.
+          CLEAR: <FS_PROFILE>-E_ADDRESS.
+          CONCATENATE <FS_PROFILE>-STRAS <FS_PROFILE>-ORT01 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+          CONDENSE <FS_PROFILE>-E_ADDRESS.
+        ENDIF.
+
+        " Tel, Fax, Tax, Email
+        <FS_PROFILE>-E_TAX = <FS_PROFILE>-STCD1.
+        <FS_PROFILE>-E_TEL_NUMBER = ''.
+        <FS_PROFILE>-E_FAX_NUMBER = ''.
+        <FS_PROFILE>-E_EMAIL = ''.
+      ELSE.
+*    "TITLE
+        <FS_PROFILE>-E_TITLE = I_S_EXPORT-ANRED.
+        CONDENSE <FS_PROFILE>-E_TITLE.
+
+        CLEAR: <FS_PROFILE>-E_NAME.
+        " Ten Customer One time Name = Name 1 + Name 2 + Name 3 + Name 4
+        IF I_S_EXPORT-NAME2 IS INITIAL AND I_S_EXPORT-NAME3 IS INITIAL AND I_S_EXPORT-NAME4 IS INITIAL.
+          <FS_PROFILE>-E_NAME = I_S_EXPORT-NAME1.
+        ELSE.
+          CONCATENATE I_S_EXPORT-NAME2 I_S_EXPORT-NAME3 I_S_EXPORT-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+        ENDIF.
+
+*    E_NAME1 = I_S_EXPORT-NAME1.
+        CONDENSE: <FS_PROFILE>-E_NAME.
+
+        " Dia chi
+
+        CLEAR: <FS_PROFILE>-E_ADDRESS.
+        CONCATENATE I_S_EXPORT-STREET I_S_EXPORT-CITY1 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+        CONDENSE <FS_PROFILE>-E_ADDRESS.
+*
+        IF <FS_PROFILE>-XCPDK EQ 'X'.
+          CLEAR: <FS_PROFILE>-E_ADDRESS.
+          CONCATENATE I_S_EXPORT-STRAS I_S_EXPORT-ORT01 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+          CONDENSE <FS_PROFILE>-E_ADDRESS.
+        ENDIF.
+
+        " Tel, Fax, Tax, Email
+        <FS_PROFILE>-E_TAX = I_S_EXPORT-STCD1.
+        <FS_PROFILE>-E_TEL_NUMBER = ''.
+        <FS_PROFILE>-E_FAX_NUMBER = ''.
+        <FS_PROFILE>-E_EMAIL = ''.
+      ENDIF.
+    ENDIF.
+    AT LAST.
+      I_S_EXPORT = <FS_PROFILE>.
+    ENDAT.
+  ENDLOOP.
+ENDFORM.
+
+FORM GET_VEN_PROFILE_N  TABLES    LR_OBJECT
+                                  E_T_EXPORT  STRUCTURE ZCORE_ST_GET_PROFILE
+                        USING     I_BUKRS     TYPE BUKRS
+                                  I_GJAHR     TYPE GJAHR
+                                  I_BELNR     TYPE BELNR_D
+                                  I_BUZEI     TYPE BUZEI
+                        CHANGING  I_S_EXPORT  TYPE ZCORE_ST_GET_PROFILE.
+* BP Data
+  TYPES: BEGIN OF LTY_BUT000,
+           LIFNR   TYPE LIFNR,
+           PARTNER TYPE BUT000-PARTNER,
+           TAXTYPE TYPE DFKKBPTAXNUM-TAXTYPE,
+           TAXNUM  TYPE DFKKBPTAXNUM-TAXNUM,
+         END OF LTY_BUT000.
+  DATA: LT_BUT000 TYPE TABLE OF LTY_BUT000,
+        LS_BUT000 TYPE LTY_BUT000.
+
+
+  SELECT
+  LFA1~LIFNR AS OBJECT
+  LFA1~ADRNR
+  LFA1~ANRED
+  LFA1~STCEG AS TAX
+  LFA1~XCPDK
+  LFA1~KTOKK AS KTOKL
+  ADRC~TITLE
+  ADRC~NAME1
+  ADRC~NAME2
+  ADRC~NAME3
+  ADRC~NAME4
+  ADRC~HOUSE_NUM1
+  ADRC~HOUSE_NUM2
+  ADRC~HOUSE_NUM3
+  ADRC~HOME_CITY
+  ADRC~NAME_CO
+  ADRC~STR_SUPPL1
+  ADRC~STR_SUPPL2
+  ADRC~STR_SUPPL3
+  ADRC~LOCATION
+  ADRC~STREET
+  ADRC~CITY1
+  ADRC~CITY2
+  ADRC~COUNTRY
+  ADRC~TEL_NUMBER
+  ADRC~FAX_NUMBER
+  ADR6~SMTP_ADDR AS EMAIL "Gan alias cho trung voi struct
+  ADRC~PO_BOX
+  ADRC~POST_CODE1
+  ADRC~POST_CODE2
+  ADRC~POST_CODE3
+  ADRC~PO_BOX_LOBBY
+  ADRC~TEL_EXTENS
+  ADRC~FAX_EXTENS
+  ADRCT~REMARK AS E_REMARK
+  INTO CORRESPONDING FIELDS OF TABLE E_T_EXPORT
+  FROM LFA1 INNER JOIN ADRC ON ADRC~ADDRNUMBER = LFA1~ADRNR
+            LEFT JOIN ADR6 ON ADR6~ADDRNUMBER = LFA1~ADRNR
+            LEFT JOIN ADRCT ON ADRCT~ADDRNUMBER = LFA1~ADRNR
+  WHERE LIFNR IN LR_OBJECT.
+
+  IF E_T_EXPORT[] IS NOT INITIAL.
+    SELECT DISTINCT
+       VEND~VENDOR   AS LIFNR
+       BUT000~PARTNER
+       TAX~TAXTYPE
+       TAX~TAXNUM
+       FROM BUT000
+       INNER JOIN CVI_VEND_LINK AS VEND
+       ON  VEND~PARTNER_GUID = BUT000~PARTNER_GUID
+       LEFT JOIN DFKKBPTAXNUM AS TAX
+       ON TAX~PARTNER = BUT000~PARTNER
+       INTO CORRESPONDING FIELDS OF TABLE LT_BUT000
+       FOR ALL ENTRIES IN E_T_EXPORT
+       WHERE VEND~VENDOR EQ E_T_EXPORT-OBJECT.
+    IF SY-SUBRC = 0.
+      SORT LT_BUT000 BY LIFNR ASCENDING.
+    ENDIF.
+
+  ENDIF.
+
+  IF I_BELNR IS NOT INITIAL.
+    SELECT SINGLE
+    BUKRS  AS  I_BUKRS
+    GJAHR  AS  I_GJAHR
+    BELNR  AS  I_BELNR
+    BUZEI  AS  I_BUZEI
+    ANRED
+    NAME1
+    NAME2
+    NAME3
+    NAME4
+    STRAS
+    ORT01
+    LAND1
+    STCD1
+    ANRED
+    ADRNR
+    INTO CORRESPONDING FIELDS OF I_S_EXPORT
+    FROM  BSEC
+    WHERE BUKRS EQ I_BUKRS
+      AND GJAHR EQ I_GJAHR
+      AND BELNR EQ I_BELNR
+      AND BUZEI EQ I_BUZEI.
+    IF SY-SUBRC NE 0.
+      SELECT SINGLE
+      AUSBK  AS  I_BUKRS
+      GJAHR  AS  I_GJAHR
+      BELNR  AS  I_BELNR
+      BUZEI  AS  I_BUZEI
+      ANRED
+      NAME1
+      NAME2
+      NAME3
+      NAME4
+      STRAS
+      ORT01
+      LAND1
+      STCD1
+      ANRED
+      INTO CORRESPONDING FIELDS OF I_S_EXPORT
+      FROM  VBSEC
+      WHERE AUSBK EQ I_BUKRS
+        AND GJAHR EQ I_GJAHR
+        AND BELNR EQ I_BELNR
+        AND BUZEI EQ I_BUZEI.
+      IF SY-SUBRC NE 0.
+        SELECT
+        BUKRS  AS  I_BUKRS
+        GJAHR  AS  I_GJAHR
+        BELNR  AS  I_BELNR
+        BUZEI  AS  I_BUZEI
+        ANRED
+        NAME1
+        NAME2
+        NAME3
+        NAME4
+        STRAS
+        ORT01
+        LAND1
+        STCD1
+        ANRED
+        ADRNR
+        INTO CORRESPONDING FIELDS OF I_S_EXPORT
+        FROM  BSEC
+          UP TO 1 ROWS
+        WHERE BUKRS EQ I_BUKRS
+          AND GJAHR EQ I_GJAHR
+          AND BELNR EQ I_BELNR.
+        ENDSELECT.
+        IF SY-SUBRC NE 0.
+          SELECT
+          AUSBK  AS  I_BUKRS
+          GJAHR  AS  I_GJAHR
+          BELNR  AS  I_BELNR
+          ANRED
+          NAME1
+          NAME2
+          NAME3
+          NAME4
+          STRAS
+          ORT01
+          LAND1
+          STCD1
+          ANRED
+          INTO CORRESPONDING FIELDS OF I_S_EXPORT
+          FROM  VBSEC
+            UP TO 1 ROWS
+          WHERE AUSBK EQ I_BUKRS
+            AND GJAHR EQ I_GJAHR
+            AND BELNR EQ I_BELNR.
+          ENDSELECT.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+  ENDIF.
+  LOOP AT E_T_EXPORT ASSIGNING <FS_PROFILE>.
+*      i_s_import = <fs_profile>.
+*      read table gt_data into gs_data with key i_number = <fs_profile>-i_number.
+*      if sy-subrc eq 0.
+*        <fs_profile> = gs_data.
+    <FS_PROFILE>-E_KTOKL = <FS_PROFILE>-KTOKL.
+
+    IF <FS_PROFILE>-XCPDK NE 'X'.
+
+*    "TITLE
+      <FS_PROFILE>-E_TITLE = <FS_PROFILE>-ANRED.
+      CONDENSE <FS_PROFILE>-E_TITLE.
+
+      " Ten Customer
+      CLEAR: <FS_PROFILE>-E_NAME.
+      IF <FS_PROFILE>-NAME2 IS INITIAL AND <FS_PROFILE>-NAME3 IS INITIAL AND <FS_PROFILE>-NAME4 IS INITIAL.
+        <FS_PROFILE>-E_NAME = <FS_PROFILE>-NAME1.
+      ELSE.
+        CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+      ENDIF.
+
+      CONDENSE: <FS_PROFILE>-E_NAME.
+
+      CLEAR: <FS_PROFILE>-E_NAME_EN.
+      IF <FS_PROFILE>-NAME2 IS INITIAL AND <FS_PROFILE>-NAME3 IS INITIAL AND <FS_PROFILE>-NAME4 IS INITIAL.
+        <FS_PROFILE>-E_NAME_EN = <FS_PROFILE>-NAME1.
+      ELSE.
+        CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME_EN SEPARATED BY SPACE.
+      ENDIF.
+
+      CONDENSE <FS_PROFILE>-E_NAME_EN.
+
+      " Dia chi
+      CLEAR: <FS_PROFILE>-E_ADDRESS.
+      CONCATENATE <FS_PROFILE>-STREET <FS_PROFILE>-STR_SUPPL1 <FS_PROFILE>-STR_SUPPL2 <FS_PROFILE>-STR_SUPPL3  INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+*    CONCATENATE I_S_EXPORT-HOUSE_NUM1 I_S_EXPORT-HOUSE_NUM2 I_S_EXPORT-HOUSE_NUM3 I_S_EXPORT-STREET I_S_EXPORT-STR_SUPPL1 I_S_EXPORT-STR_SUPPL2 I_S_EXPORT-STR_SUPPL3 I_S_EXPORT-CITY2 I_S_EXPORT-CITY1 INTO E_ADDRESS SEPARATED BY SPACE.
+      CONDENSE <FS_PROFILE>-E_ADDRESS.
+
+      " Tel, Fax, Tax, Email
+      <FS_PROFILE>-E_TAX         = <FS_PROFILE>-TAX.
+      <FS_PROFILE>-E_TEL_NUMBER  = <FS_PROFILE>-TEL_NUMBER.
+      <FS_PROFILE>-E_FAX_NUMBER  = <FS_PROFILE>-FAX_NUMBER.
+      <FS_PROFILE>-E_EMAIL       = <FS_PROFILE>-EMAIL.
+
+    ELSE.
+      IF I_S_EXPORT IS INITIAL.
+*    "TITLE
+        <FS_PROFILE>-E_TITLE = <FS_PROFILE>-ANRED.
+        CONDENSE <FS_PROFILE>-E_TITLE.
+
+        CLEAR: <FS_PROFILE>-E_NAME.
+        " Ten Customer One time Name = Name 1 + Name 2 + Name 3 + Name 4
+*    CONCATENATE I_S_EXPORT-NAME1 I_S_EXPORT-NAME2 I_S_EXPORT-NAME3 I_S_EXPORT-NAME4 INTO E_NAME SEPARATED BY SPACE.
+        IF <FS_PROFILE>-NAME2 IS INITIAL AND <FS_PROFILE>-NAME3 IS INITIAL AND <FS_PROFILE>-NAME4 IS INITIAL.
+          <FS_PROFILE>-E_NAME = <FS_PROFILE>-NAME1.
+        ELSE.
+          "CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 I_S_EXPORT-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+          CONCATENATE <FS_PROFILE>-NAME2 <FS_PROFILE>-NAME3 <FS_PROFILE>-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+        ENDIF.
+
+*    E_NAME1 = I_S_EXPORT-NAME1.
+        CONDENSE: <FS_PROFILE>-E_NAME.
+
+        " Dia chi
+
+        CLEAR: <FS_PROFILE>-E_ADDRESS.
+        CONCATENATE <FS_PROFILE>-STREET <FS_PROFILE>-CITY1 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+        CONDENSE <FS_PROFILE>-E_ADDRESS.
+*
+        IF <FS_PROFILE>-XCPDK EQ 'X'.
+          CLEAR: <FS_PROFILE>-E_ADDRESS.
+          CONCATENATE <FS_PROFILE>-STRAS <FS_PROFILE>-ORT01 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+          CONDENSE <FS_PROFILE>-E_ADDRESS.
+        ENDIF.
+
+        " Tel, Fax, Tax, Email
+        <FS_PROFILE>-E_TAX = I_S_EXPORT-STCD1.
+        <FS_PROFILE>-E_TEL_NUMBER = ''.
+        <FS_PROFILE>-E_FAX_NUMBER = ''.
+        <FS_PROFILE>-E_EMAIL = ''.
+      ELSE.
+*    "TITLE
+        <FS_PROFILE>-E_TITLE = I_S_EXPORT-ANRED.
+        CONDENSE <FS_PROFILE>-E_TITLE.
+
+        CLEAR: <FS_PROFILE>-E_NAME.
+        " Ten Customer One time Name = Name 1 + Name 2 + Name 3 + Name 4
+        IF I_S_EXPORT-NAME2 IS INITIAL AND I_S_EXPORT-NAME3 IS INITIAL AND I_S_EXPORT-NAME4 IS INITIAL.
+          <FS_PROFILE>-E_NAME = I_S_EXPORT-NAME1.
+        ELSE.
+          CONCATENATE I_S_EXPORT-NAME2 I_S_EXPORT-NAME3 I_S_EXPORT-NAME4 INTO <FS_PROFILE>-E_NAME SEPARATED BY SPACE.
+        ENDIF.
+
+        CONDENSE: <FS_PROFILE>-E_NAME.
+
+        " Dia chi
+        CLEAR: <FS_PROFILE>-E_ADDRESS.
+        CONCATENATE I_S_EXPORT-STREET I_S_EXPORT-CITY1 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+        CONDENSE <FS_PROFILE>-E_ADDRESS.
+*
+        IF <FS_PROFILE>-XCPDK EQ 'X'.
+          CLEAR: <FS_PROFILE>-E_ADDRESS.
+          CONCATENATE I_S_EXPORT-STRAS I_S_EXPORT-ORT01 INTO <FS_PROFILE>-E_ADDRESS SEPARATED BY SPACE.
+          CONDENSE <FS_PROFILE>-E_ADDRESS.
+        ENDIF.
+
+        " Tel, Fax, Tax, Email
+        <FS_PROFILE>-E_TAX = I_S_EXPORT-STCD1.
+        <FS_PROFILE>-E_TEL_NUMBER = ''.
+        <FS_PROFILE>-E_FAX_NUMBER = ''.
+        <FS_PROFILE>-E_EMAIL = ''.
+      ENDIF.
+    ENDIF.
+
+    " Dia chi tieng Anh : C/o + Street 5 + Other city
+    CLEAR: <FS_PROFILE>-E_ADDRESS_EN.
+    CONCATENATE <FS_PROFILE>-NAME_CO <FS_PROFILE>-LOCATION <FS_PROFILE>-HOME_CITY INTO <FS_PROFILE>-E_ADDRESS_EN SEPARATED BY SPACE.
+    CONDENSE <FS_PROFILE>-E_ADDRESS_EN.
+
+*   BP data
+    READ TABLE LT_BUT000 INTO LS_BUT000
+      WITH KEY LIFNR = <FS_PROFILE>-OBJECT BINARY SEARCH.
+    IF SY-SUBRC = 0.
+      <FS_PROFILE>-PARTNER = LS_BUT000-PARTNER.
+      <FS_PROFILE>-TAX     = LS_BUT000-TAXNUM.
+    ENDIF.
+
+    AT LAST.
+      I_S_EXPORT = <FS_PROFILE>.
+    ENDAT.
+  ENDLOOP.
+ENDFORM.
+
+FORM GET_TAX USING VALUE(U_TAX)
+                   U_KUNNR TYPE KNA1-KUNNR
+             CHANGING C_TAX TYPE CHAR255.
+  DATA:
+    LW_XCPDK   TYPE KNA1-XCPDK,
+    LW_STCEG   TYPE KNA1-STCEG,
+    LW_PARTNER TYPE BUT000-PARTNER.
+
+  " Kiem Tra Loai Customer
+*  SELECT SINGLE XCPDK STCEG
+*  INTO (LW_XCPDK, LW_STCEG)
+*  FROM KNA1
+*  WHERE KUNNR EQ U_KUNNR.
+*
+*  IF LW_XCPDK NE 'X'.
+*    C_TAX = LW_STCEG.
+*  ELSE.
+*    C_TAX = U_TAX.
+*  ENDIF.
+
+*  CLEAR E_TAX.
+
+  SELECT SINGLE
+    BUT000~PARTNER
+    INTO LW_PARTNER
+    FROM CVI_CUST_LINK
+*          INNER JOIN CVI_CUST_LINK ON KNA1~KUNNR EQ CVI_CUST_LINK~CUSTOMER
+          INNER JOIN BUT000 ON CVI_CUST_LINK~PARTNER_GUID EQ BUT000~PARTNER_GUID
+    WHERE CVI_CUST_LINK~CUSTOMER EQ U_KUNNR.
+  IF SY-SUBRC = 0.
+    SELECT SINGLE TAXNUM
+    INTO C_TAX
+    FROM DFKKBPTAXNUM
+    WHERE PARTNER = LW_PARTNER.
+  ENDIF.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  DOC_SO_THAP_PHAN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->I_AMOUNT   text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_SO_THAP_PHAN USING I_AMOUNT TYPE BSPL_REPVAL
+                            E_IN_WORDS TYPE CHAR255.
+
+  DATA: NUM_NGUYEN    TYPE NUM20,
+        NUM_THAPPHAN  TYPE NUMC2,
+        NUM_TEMP      TYPE STRING,
+        READ_NGUYEN   TYPE CHAR255,
+        READ_THAPPHAN TYPE CHAR255.
+*  DATA: NGUYEN TYPE I,
+*       NUM_LENGHT TYPE I,
+*       NUM_LENGHT1 TYPE I.
+
+  NUM_TEMP = I_AMOUNT.
+****  Lay phan nguyen va thap phan
+**  Cách 1:
+*  NUM_LENGHT = STRLEN( NUM_TEMP ) - 3.
+*  NUM_THAPPHAN = NUM_TEMP+NUM_LENGHT(2).
+*  NUM_LENGHT1 = NUM_LENGHT - 1.
+*  NUM_NGUYEN = NUM_TEMP+0(NUM_LENGHT1).
+**  Cach 2
+  SPLIT NUM_TEMP AT '.' INTO NUM_NGUYEN NUM_THAPPHAN.
+*********
+  PERFORM DOC_PHAN_NGUYEN USING NUM_NGUYEN READ_NGUYEN.
+  IF NUM_THAPPHAN NE '00'.
+    PERFORM DOC_PHAN_THAP_PHAN USING NUM_THAPPHAN READ_THAPPHAN.
+    CONCATENATE READ_NGUYEN 'phẩy' READ_THAPPHAN INTO E_IN_WORDS SEPARATED BY SPACE.
+  ELSE.
+    E_IN_WORDS = READ_NGUYEN.
+  ENDIF.
+
+ENDFORM.                    "DOC_SO_THAP_PHAN
+
+
+*&---------------------------------------------------------------------*
+*&      Form  DOC_SO_THAP_PHAN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->I_AMOUNT   text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_SO_THAP_PHAN_USD USING I_AMOUNT TYPE BSPL_REPVAL
+                            E_IN_WORDS TYPE CHAR255.
+
+  DATA: NUM_NGUYEN    TYPE NUM20,
+        NUM_THAPPHAN  TYPE NUMC2,
+        NUM_TEMP      TYPE STRING,
+        READ_NGUYEN   TYPE CHAR255,
+        READ_THAPPHAN TYPE CHAR255.
+  NUM_TEMP = I_AMOUNT.
+****  Lay phan nguyen va thap phan
+**  Cách 1:
+*  NUM_LENGHT = STRLEN( NUM_TEMP ) - 3.
+*  NUM_THAPPHAN = NUM_TEMP+NUM_LENGHT(2).
+*  NUM_LENGHT1 = NUM_LENGHT - 1.
+*  NUM_NGUYEN = NUM_TEMP+0(NUM_LENGHT1).
+**  Cach 2
+  SPLIT NUM_TEMP AT '.' INTO NUM_NGUYEN NUM_THAPPHAN.
+*********
+  PERFORM DOC_PHAN_NGUYEN USING NUM_NGUYEN READ_NGUYEN.
+  IF NUM_THAPPHAN NE '00'.
+    PERFORM DOC_PHAN_THAP_PHAN USING NUM_THAPPHAN READ_THAPPHAN.
+    CONCATENATE READ_NGUYEN 'đô la Mỹ và ' READ_THAPPHAN ' cent 'INTO E_IN_WORDS SEPARATED BY SPACE.
+  ELSE.
+    CONCATENATE READ_NGUYEN 'đô la Mỹ' INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+
+ENDFORM.                    "DOC_SO_THAP_PHAN
+
+*&---------------------------------------------------------------------*
+*&      Form  DOC_PHAN_NGUYEN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_PHAN_NGUYEN USING AMOUNT TYPE NUM20
+                           E_IN_WORDS TYPE CHAR255.
+
+  DATA: AMOUNT1 TYPE NUMC1,
+        AMOUNT2 TYPE NUMC2,
+        AMOUNT3 TYPE NUMC3,
+        READ_TP TYPE CHAR1.
+
+  SHIFT AMOUNT LEFT DELETING LEADING '0'.
+
+  CASE STRLEN( AMOUNT ).
+    WHEN 0.
+      AMOUNT1 = 0.
+      PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+    WHEN 1.
+      AMOUNT1 = AMOUNT(1).
+      PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+    WHEN 2.
+      AMOUNT2 = AMOUNT(2).
+      READ_TP = 'N'.
+      PERFORM DOC2CHUSO USING AMOUNT2 E_IN_WORDS READ_TP.
+    WHEN 3.
+      AMOUNT3 = AMOUNT(3).
+      PERFORM DOC3CHUSO USING AMOUNT3 E_IN_WORDS.
+    WHEN OTHERS.
+      PERFORM DOC_N_CHUSO USING AMOUNT E_IN_WORDS.
+  ENDCASE.
+
+ENDFORM.                    "DOC_PHAN_NGUYEN
+*&---------------------------------------------------------------------*
+*&      Form  DOC_PHAN_THAP_PHAN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->NUM_THAPPHAN  text
+*      -->E_IN_WORDS    text
+*      -->READ_TP       text
+*----------------------------------------------------------------------*
+FORM DOC_PHAN_THAP_PHAN USING NUM_THAPPHAN TYPE NUMC2
+                              E_IN_WORDS TYPE CHAR255.
+  DATA: THAP_PHAN  TYPE NUMC2,
+        THAP_PHAN1 TYPE NUM1,
+        READ_TP    TYPE CHAR1.
+  THAP_PHAN = NUM_THAPPHAN.
+  CASE THAP_PHAN(1).
+    WHEN 0.
+      THAP_PHAN1 = THAP_PHAN+1(1).
+      PERFORM DOC1CHUSO USING THAP_PHAN1 E_IN_WORDS.
+      "CONCATENATE 'không' E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    WHEN OTHERS.
+      READ_TP = 'Y'.
+      PERFORM DOC2CHUSOTP USING THAP_PHAN E_IN_WORDS READ_TP.
+  ENDCASE.
+  CONDENSE E_IN_WORDS.
+ENDFORM.                    "DOC_PHAN_THAP_PHAN
+*&---------------------------------------------------------------------*
+*&      Form  DOC1CHUSO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC1CHUSO USING AMOUNT TYPE NUMC1
+                     E_IN_WORDS TYPE CHAR255.
+  CASE AMOUNT.
+    WHEN '0'.
+      E_IN_WORDS = 'không'.
+    WHEN '1'.
+      E_IN_WORDS = 'một'.
+    WHEN '2'.
+      E_IN_WORDS = 'hai'.
+    WHEN '3'.
+      E_IN_WORDS = 'ba'.
+    WHEN '4'.
+      E_IN_WORDS = 'bốn'.
+    WHEN '5'.
+      E_IN_WORDS = 'năm'.
+    WHEN '6'.
+      E_IN_WORDS = 'sáu'.
+    WHEN '7'.
+      E_IN_WORDS = 'bảy'.
+    WHEN '8'.
+      E_IN_WORDS = 'tám'.
+    WHEN '9'.
+      E_IN_WORDS = 'chín'.
+    WHEN OTHERS.
+  ENDCASE.
+ENDFORM.                                                    "DOC1CHUSO
+*&---------------------------------------------------------------------*
+*&      Form  DOC2CHUSO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC2CHUSOTP USING  AMOUNT TYPE NUMC2
+                      E_IN_WORDS TYPE CHAR255
+                      READ_TP TYPE CHAR1.
+  DATA: AMOUNT1     TYPE NUMC1,
+        E_IN_WORDS1 TYPE CHAR255.
+
+  E_IN_WORDS = 'mười'.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '1' AND READ_TP EQ 'N'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+    CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+*** Danh cho 2 chu so thap phan
+****** khi 1,50 duoc doc la mot phay nam, khong phai la mot phay nam muoi.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '0' AND READ_TP EQ 'Y'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+  ENDIF.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) = '1' AND READ_TP EQ 'Y'.
+    E_IN_WORDS = 'mười'.
+  ENDIF.
+***************************
+  "IF AMOUNT+1(1) <> '0'.
+  CASE AMOUNT+1(1).
+    WHEN '5'.
+      IF AMOUNT(1) = '1'.
+        E_IN_WORDS = 'mười lăm'.
+      ELSE.
+        AMOUNT1 = AMOUNT(1).
+        PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+        CONCATENATE E_IN_WORDS 'mươi lăm' INTO E_IN_WORDS SEPARATED BY SPACE.
+      ENDIF.
+    WHEN '1'.
+      IF AMOUNT(1) = '1'.
+        E_IN_WORDS = 'mười một'.
+      ELSE.
+        AMOUNT1 = AMOUNT(1).
+        PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+        CONCATENATE E_IN_WORDS 'mươi mốt' INTO E_IN_WORDS SEPARATED BY SPACE.
+      ENDIF.
+    WHEN OTHERS.
+      IF AMOUNT(1) = '1'.
+        AMOUNT1 = AMOUNT+1(1).
+        " Sao lai cmt doan duoi
+        PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+        CONCATENATE 'mười' E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+      ELSE.
+        AMOUNT1 = AMOUNT(1).
+        PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+        AMOUNT1 = AMOUNT+1(1).
+        PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS1.
+        IF E_IN_WORDS1 <> 'không'.
+          CONCATENATE E_IN_WORDS 'mươi' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+        ELSE.
+          CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+        ENDIF.
+      ENDIF.
+  ENDCASE.
+  "ENDIF.
+ENDFORM.                                                    "DOC2CHUSO
+
+FORM DOC2CHUSO USING  AMOUNT TYPE NUMC2
+                      E_IN_WORDS TYPE CHAR255
+                      READ_TP TYPE CHAR1.
+  DATA: AMOUNT1     TYPE NUMC1,
+        E_IN_WORDS1 TYPE CHAR255.
+
+  E_IN_WORDS = 'mười'.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '1' AND READ_TP EQ 'N'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+    CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+*** Danh cho 2 chu so thap phan
+****** khi 1,50 duoc doc la mot phay nam, khong phai la mot phay nam muoi.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '0' AND READ_TP EQ 'Y'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+  ENDIF.
+*  IF AMOUNT+1(1) = '0' AND AMOUNT(1) = '1' AND READ_TP EQ 'Y'.
+*    E_IN_WORDS = 'mười'.
+*  ENDIF.
+***************************
+  IF AMOUNT+1(1) <> '0'.
+    CASE AMOUNT+1(1).
+      WHEN '5'.
+        IF AMOUNT(1) = '1'.
+          E_IN_WORDS = 'mười lăm'.
+        ELSE.
+          AMOUNT1 = AMOUNT(1).
+          PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+          CONCATENATE E_IN_WORDS 'mươi lăm' INTO E_IN_WORDS SEPARATED BY SPACE.
+        ENDIF.
+      WHEN '1'.
+        IF AMOUNT(1) = '1'.
+          E_IN_WORDS = 'mười một'.
+        ELSE.
+          AMOUNT1 = AMOUNT(1).
+          PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+          CONCATENATE E_IN_WORDS 'mươi mốt' INTO E_IN_WORDS SEPARATED BY SPACE.
+        ENDIF.
+      WHEN OTHERS.
+        IF AMOUNT(1) = '1'.
+          AMOUNT1 = AMOUNT+1(1).
+          PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+          CONCATENATE 'mười' E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+        ELSE.
+          AMOUNT1 = AMOUNT(1).
+          PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+          AMOUNT1 = AMOUNT+1(1).
+          PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS1.
+          IF E_IN_WORDS1 <> 'không'.
+            CONCATENATE E_IN_WORDS 'mươi' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+          ELSE.
+            CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+          ENDIF.
+        ENDIF.
+    ENDCASE.
+  ENDIF.
+ENDFORM.                                                    "DOC2CHUSO
+*&---------------------------------------------------------------------*
+*&      Form  DOC3CHUSO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC3CHUSO USING AMOUNT TYPE NUMC3
+                     E_IN_WORDS TYPE CHAR255.
+  DATA: AMOUNT1     TYPE NUMC1,
+        AMOUNT2     TYPE NUMC2,
+        E_IN_WORDS1 TYPE CHAR255.
+
+  E_IN_WORDS = 'trăm'.
+  IF AMOUNT+1(1) = '0'.
+    IF AMOUNT+2(1) = '0'.
+      AMOUNT1 = AMOUNT(1).
+      PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+      CONCATENATE E_IN_WORDS 'trăm' INTO E_IN_WORDS SEPARATED BY SPACE.
+    ELSE.
+      AMOUNT1 = AMOUNT(1).
+      PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+      AMOUNT1 = AMOUNT+2(1).
+      PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS1.
+      CONCATENATE E_IN_WORDS 'trăm lẻ' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+    ENDIF.
+  ELSE.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC1CHUSO USING AMOUNT1 E_IN_WORDS.
+    AMOUNT2 = AMOUNT+1(2).
+    PERFORM DOC2CHUSO USING AMOUNT2 E_IN_WORDS1 'N'.
+    CONCATENATE E_IN_WORDS 'trăm' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+ENDFORM.                                                    "DOC3CHUSO
+*&---------------------------------------------------------------------*
+*&      Form  DOC_N_CHU_SO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_N_CHUSO USING AMOUNT TYPE NUM20
+                        E_IN_WORDS TYPE CHAR255.
+  DATA: AMOUNT1 TYPE NUMC1,
+        AMOUNT2 TYPE NUMC2,
+        AMOUNT3 TYPE NUMC3.
+  DATA: IN_TEMP TYPE CHAR255 VALUE '',
+        IN_CHEN TYPE CHAR255 VALUE '',
+        DEM     TYPE I VALUE 0, DEM0 TYPE I VALUE 0,
+        LEN     TYPE I, DAI TYPE I.
+
+  LEN = STRLEN( AMOUNT ).
+  WHILE LEN > 3.
+    CASE DEM.
+      WHEN 1.
+        IN_CHEN = 'nghìn'.
+      WHEN 2.
+        IN_CHEN = 'triệu'.
+      WHEN 3.
+        IN_CHEN = 'tỷ'.
+    ENDCASE.
+    DAI = LEN - 3.
+    AMOUNT3 = AMOUNT+DAI(3).
+    IF AMOUNT3 = '000'.
+      DEM0 = DEM0 + 1.
+    ENDIF.
+    IF AMOUNT3 <> '000'.
+      PERFORM DOC3CHUSO USING AMOUNT3 IN_TEMP.
+      CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    ELSEIF DEM = 3.
+      CONCATENATE IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    ELSEIF DEM = DEM0.
+      CONCATENATE 'không' IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    ENDIF.
+    DEM = DEM + 1.
+    IF DEM > 3.
+      DEM = 1.
+    ENDIF.
+    IF LEN > 3.
+      LEN = LEN - 3.
+    ENDIF.
+  ENDWHILE.
+  CASE DEM.
+    WHEN 1.
+      IN_CHEN = 'nghìn'.
+    WHEN 2.
+      IN_CHEN = 'triệu'.
+    WHEN 3.
+      IN_CHEN = 'tỷ'.
+  ENDCASE.
+  IF LEN = 1.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC1CHUSO USING AMOUNT1 IN_TEMP.
+    CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+  IF LEN = 2.
+    AMOUNT2 = AMOUNT(2).
+    PERFORM DOC2CHUSO USING AMOUNT2 IN_TEMP 'N'.
+    CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+  IF LEN = 3.
+    AMOUNT3 = AMOUNT(3).
+    PERFORM DOC3CHUSO USING AMOUNT3 IN_TEMP.
+    CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+ENDFORM.                    "DOC_N_CHU_SO
+
+*&---------------------------------------------------------------------*
+*&      Form  DOC_PHAN_NGUYEN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_PHANNGUYEN USING AMOUNT TYPE NUM15
+                           E_IN_WORDS TYPE CHAR255.
+
+  DATA: AMOUNT1 TYPE NUMC1,
+        AMOUNT2 TYPE NUMC2,
+        AMOUNT3 TYPE NUMC3,
+        READ_TP TYPE CHAR1.
+
+  SHIFT AMOUNT LEFT DELETING LEADING '0'.
+
+  CASE STRLEN( AMOUNT ).
+    WHEN 0.
+      AMOUNT1 = 0.
+      PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+    WHEN 1.
+      AMOUNT1 = AMOUNT(1).
+      PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+    WHEN 2.
+      AMOUNT2 = AMOUNT(2).
+      READ_TP = 'N'.
+      PERFORM DOC_2CHUSO USING AMOUNT2 E_IN_WORDS READ_TP.
+    WHEN 3.
+      AMOUNT3 = AMOUNT(3).
+      PERFORM DOC_3CHUSO USING AMOUNT3 E_IN_WORDS.
+    WHEN OTHERS.
+      PERFORM DOC_NCHUSO USING AMOUNT E_IN_WORDS.
+  ENDCASE.
+
+ENDFORM.                    "DOC_PHAN_NGUYEN
+*&---------------------------------------------------------------------*
+*&      Form  DOC_PHAN_THAP_PHAN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->NUM_THAPPHAN  text
+*      -->E_IN_WORDS    text
+*      -->READ_TP       text
+*----------------------------------------------------------------------*
+FORM DOC_PHANTHAPPHAN USING NUM_THAPPHAN TYPE NUMC3
+                              E_IN_WORDS TYPE CHAR255.
+  DATA: THAP_PHAN2 TYPE NUMC2,
+        THAP_PHAN1 TYPE NUM1,
+        READ_TP    TYPE CHAR1,
+        LW_TMP     TYPE CHAR255.
+  THAP_PHAN1 =  NUM_THAPPHAN(1).
+  THAP_PHAN2 = NUM_THAPPHAN+1(2).
+  IF NUM_THAPPHAN+2(1) NE '0'.
+    PERFORM DOC_1CHUSO USING THAP_PHAN1 LW_TMP.
+    IF THAP_PHAN2 NE '00' AND THAP_PHAN2+1(1) NE '0'.
+      CONCATENATE LW_TMP 'trăm' INTO LW_TMP SEPARATED BY SPACE.
+    ENDIF.
+    CONCATENATE E_IN_WORDS LW_TMP INTO E_IN_WORDS SEPARATED BY SPACE.
+    CLEAR : LW_TMP.
+    IF THAP_PHAN2 NE '00'.
+      CASE THAP_PHAN2(1).
+        WHEN 0.
+          THAP_PHAN1 = NUM_THAPPHAN+2(1).
+          PERFORM DOC_1CHUSO USING THAP_PHAN1 LW_TMP.
+          CONCATENATE 'lẻ' LW_TMP INTO LW_TMP SEPARATED BY SPACE.
+        WHEN OTHERS.
+          THAP_PHAN2 = NUM_THAPPHAN+1(2).
+          PERFORM DOC_2CHUSOTP USING THAP_PHAN2 LW_TMP READ_TP.
+      ENDCASE.
+      CONCATENATE E_IN_WORDS LW_TMP INTO E_IN_WORDS SEPARATED BY SPACE.
+    ENDIF.
+  ELSE.
+    THAP_PHAN2 = NUM_THAPPHAN(2).
+    CASE THAP_PHAN2(1).
+      WHEN 0.
+        THAP_PHAN1 = THAP_PHAN2+1(1).
+        PERFORM DOC_1CHUSO USING THAP_PHAN1 LW_TMP.
+        CONCATENATE 'lẻ' LW_TMP INTO LW_TMP SEPARATED BY SPACE.
+      WHEN OTHERS.
+        PERFORM DOC_2CHUSOTP USING THAP_PHAN2 LW_TMP READ_TP.
+    ENDCASE.
+    E_IN_WORDS = LW_TMP.
+  ENDIF.
+  CONDENSE E_IN_WORDS.
+ENDFORM.                    "DOC_PHAN_THAP_PHAN
+*&---------------------------------------------------------------------*
+*&      Form  DOC_1CHUSO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_1CHUSO USING AMOUNT TYPE NUMC1
+                     E_IN_WORDS TYPE CHAR255.
+  CASE AMOUNT.
+    WHEN '0'.
+      E_IN_WORDS = 'không'.
+    WHEN '1'.
+      E_IN_WORDS = 'một'.
+    WHEN '2'.
+      E_IN_WORDS = 'hai'.
+    WHEN '3'.
+      E_IN_WORDS = 'ba'.
+    WHEN '4'.
+      E_IN_WORDS = 'bốn'.
+    WHEN '5'.
+      E_IN_WORDS = 'năm'.
+    WHEN '6'.
+      E_IN_WORDS = 'sáu'.
+    WHEN '7'.
+      E_IN_WORDS = 'bảy'.
+    WHEN '8'.
+      E_IN_WORDS = 'tám'.
+    WHEN '9'.
+      E_IN_WORDS = 'chín'.
+    WHEN OTHERS.
+  ENDCASE.
+ENDFORM.                                                    "DOC_1CHUSO
+*&---------------------------------------------------------------------*
+*&      Form  DOC_2CHUSO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_2CHUSOTP USING  AMOUNT TYPE NUMC2
+                      E_IN_WORDS TYPE CHAR255
+                      READ_TP TYPE CHAR1.
+  DATA: AMOUNT1     TYPE NUMC1,
+        E_IN_WORDS1 TYPE CHAR255.
+
+  E_IN_WORDS = 'mười'.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '1' AND READ_TP EQ 'N'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+    CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+*** Danh cho 2 chu so thap phan
+****** khi 1,50 duoc doc la mot phay nam, khong phai la mot phay nam muoi.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '0' AND READ_TP EQ 'Y'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+  ENDIF.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) = '1' AND READ_TP EQ 'Y'.
+    E_IN_WORDS = 'mười'.
+  ENDIF.
+***************************
+  "IF AMOUNT+1(1) <> '0'.
+  CASE AMOUNT+1(1).
+    WHEN '5'.
+      IF AMOUNT(1) = '1'.
+        E_IN_WORDS = 'mười lăm'.
+      ELSE.
+        AMOUNT1 = AMOUNT(1).
+        PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+        CONCATENATE E_IN_WORDS 'mươi lăm' INTO E_IN_WORDS SEPARATED BY SPACE.
+      ENDIF.
+    WHEN '1'.
+      IF AMOUNT(1) = '1'.
+        E_IN_WORDS = 'mười một'.
+      ELSE.
+        AMOUNT1 = AMOUNT(1).
+        PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+        CONCATENATE E_IN_WORDS 'mươi mốt' INTO E_IN_WORDS SEPARATED BY SPACE.
+      ENDIF.
+    WHEN OTHERS.
+      IF AMOUNT(1) = '1'.
+        AMOUNT1 = AMOUNT+1(1).
+      ELSE.
+        AMOUNT1 = AMOUNT(1).
+        PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+        AMOUNT1 = AMOUNT+1(1).
+        PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS1.
+        IF E_IN_WORDS1 <> 'không'.
+          CONCATENATE E_IN_WORDS 'mươi' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+        ELSE.
+          CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+        ENDIF.
+      ENDIF.
+  ENDCASE.
+  "ENDIF.
+ENDFORM.                                                    "DOC_2CHUSO
+
+FORM DOC_2CHUSO USING  AMOUNT TYPE NUMC2
+                      E_IN_WORDS TYPE CHAR255
+                      READ_TP TYPE CHAR1.
+  DATA: AMOUNT1     TYPE NUMC1,
+        E_IN_WORDS1 TYPE CHAR255.
+
+  E_IN_WORDS = 'mười'.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '1' AND READ_TP EQ 'N'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+    CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+*** Danh cho 2 chu so thap phan
+****** khi 1,50 duoc doc la mot phay nam, khong phai la mot phay nam muoi.
+  IF AMOUNT+1(1) = '0' AND AMOUNT(1) <> '0' AND READ_TP EQ 'Y'.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+  ENDIF.
+*  IF AMOUNT+1(1) = '0' AND AMOUNT(1) = '1' AND READ_TP EQ 'Y'.
+*    E_IN_WORDS = 'mười'.
+*  ENDIF.
+***************************
+  IF AMOUNT+1(1) <> '0'.
+    CASE AMOUNT+1(1).
+      WHEN '5'.
+        IF AMOUNT(1) = '1'.
+          E_IN_WORDS = 'mười lăm'.
+        ELSE.
+          AMOUNT1 = AMOUNT(1).
+          PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+          CONCATENATE E_IN_WORDS 'mươi lăm' INTO E_IN_WORDS SEPARATED BY SPACE.
+        ENDIF.
+      WHEN '1'.
+        IF AMOUNT(1) = '1'.
+          E_IN_WORDS = 'mười một'.
+        ELSE.
+          AMOUNT1 = AMOUNT(1).
+          PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+          CONCATENATE E_IN_WORDS 'mươi mốt' INTO E_IN_WORDS SEPARATED BY SPACE.
+        ENDIF.
+      WHEN OTHERS.
+        IF AMOUNT(1) = '1'.
+          AMOUNT1 = AMOUNT+1(1).
+          PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+          CONCATENATE 'mười' E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+        ELSE.
+          AMOUNT1 = AMOUNT(1).
+          PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+          AMOUNT1 = AMOUNT+1(1).
+          PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS1.
+          IF E_IN_WORDS1 <> 'không'.
+            CONCATENATE E_IN_WORDS 'mươi' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+          ELSE.
+            CONCATENATE E_IN_WORDS 'mươi' INTO E_IN_WORDS SEPARATED BY SPACE.
+          ENDIF.
+        ENDIF.
+    ENDCASE.
+  ENDIF.
+ENDFORM.                                                    "DOC_2CHUSO
+*&---------------------------------------------------------------------*
+*&      Form  DOC3CHUSO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_3CHUSO USING AMOUNT TYPE NUMC3
+                     E_IN_WORDS TYPE CHAR255.
+  DATA: AMOUNT1     TYPE NUMC1,
+        AMOUNT2     TYPE NUMC2,
+        E_IN_WORDS1 TYPE CHAR255.
+
+  E_IN_WORDS = 'trăm'.
+  IF AMOUNT+1(1) = '0'.
+    IF AMOUNT+2(1) = '0'.
+      AMOUNT1 = AMOUNT(1).
+      PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+      CONCATENATE E_IN_WORDS 'trăm' INTO E_IN_WORDS SEPARATED BY SPACE.
+    ELSE.
+      AMOUNT1 = AMOUNT(1).
+      PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+      AMOUNT1 = AMOUNT+2(1).
+      PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS1.
+      CONCATENATE E_IN_WORDS 'trăm lẻ' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+    ENDIF.
+  ELSE.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC_1CHUSO USING AMOUNT1 E_IN_WORDS.
+    AMOUNT2 = AMOUNT+1(2).
+    PERFORM DOC_2CHUSO USING AMOUNT2 E_IN_WORDS1 'N'.
+    CONCATENATE E_IN_WORDS 'trăm' E_IN_WORDS1 INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+ENDFORM.                                                    "DOC3CHUSO
+*&---------------------------------------------------------------------*
+*&      Form  DOC_N_CHU_SO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->AMOUNT     text
+*      -->E_IN_WORDS text
+*----------------------------------------------------------------------*
+FORM DOC_NCHUSO USING AMOUNT TYPE NUM15
+                        E_IN_WORDS TYPE CHAR255.
+  DATA: AMOUNT1 TYPE NUMC1,
+        AMOUNT2 TYPE NUMC2,
+        AMOUNT3 TYPE NUMC3.
+  DATA: IN_TEMP TYPE CHAR255 VALUE '',
+        IN_CHEN TYPE CHAR255 VALUE '',
+        DEM     TYPE I VALUE 0, DEM0 TYPE I VALUE 0,
+        LEN     TYPE I, DAI TYPE I.
+
+  LEN = STRLEN( AMOUNT ).
+  WHILE LEN > 3.
+    CASE DEM.
+      WHEN 1.
+        IN_CHEN = 'nghìn'.
+      WHEN 2.
+        IN_CHEN = 'triệu'.
+      WHEN 3.
+        IN_CHEN = 'tỷ'.
+    ENDCASE.
+    DAI = LEN - 3.
+    AMOUNT3 = AMOUNT+DAI(3).
+    IF AMOUNT3 = '000'.
+      DEM0 = DEM0 + 1.
+    ENDIF.
+    IF AMOUNT3 <> '000'.
+      PERFORM DOC3CHUSO USING AMOUNT3 IN_TEMP.
+      CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    ELSEIF DEM = 3.
+      CONCATENATE IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    ELSEIF DEM = DEM0.
+      CONCATENATE 'không' IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+    ENDIF.
+    DEM = DEM + 1.
+    IF DEM > 3.
+      DEM = 1.
+    ENDIF.
+    IF LEN > 3.
+      LEN = LEN - 3.
+    ENDIF.
+  ENDWHILE.
+  CASE DEM.
+    WHEN 1.
+      IN_CHEN = 'nghìn'.
+    WHEN 2.
+      IN_CHEN = 'triệu'.
+    WHEN 3.
+      IN_CHEN = 'tỷ'.
+  ENDCASE.
+  IF LEN = 1.
+    AMOUNT1 = AMOUNT(1).
+    PERFORM DOC_1CHUSO USING AMOUNT1 IN_TEMP.
+    CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+  IF LEN = 2.
+    AMOUNT2 = AMOUNT(2).
+    PERFORM DOC_2CHUSO USING AMOUNT2 IN_TEMP 'N'.
+    CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+  IF LEN = 3.
+    AMOUNT3 = AMOUNT(3).
+    PERFORM DOC_3CHUSO USING AMOUNT3 IN_TEMP.
+    CONCATENATE IN_TEMP IN_CHEN E_IN_WORDS INTO E_IN_WORDS SEPARATED BY SPACE.
+  ENDIF.
+ENDFORM.                    "DOC_N_CHU_SO
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_REPLACE_DATE
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM GET_REPLACE_DATE .
+  GT_REPLACE-UNSIGN = 'd'.
+  GT_REPLACE-CHAR   = 'ĐđĐđ'.
+  APPEND GT_REPLACE.
+
+  GT_REPLACE-UNSIGN = 'a'.
+  GT_REPLACE-CHAR   = 'ÁáÀàÃãẢảẠạâẤấẦầẪẫẨẩẬậăẮắẰằẴẵẲẳẶặ'.
+  APPEND GT_REPLACE.
+
+  GT_REPLACE-UNSIGN = 'e'.
+  GT_REPLACE-CHAR   = 'ÉéÈèẼẽẺẻẸẹêẾếỀềỄễỂểỆệ'.
+  APPEND GT_REPLACE.
+
+  GT_REPLACE-UNSIGN = 'I'.
+  GT_REPLACE-CHAR   = 'ÍíÌìĨĩỈỉỊị'.
+  APPEND GT_REPLACE.
+
+  GT_REPLACE-UNSIGN = 'o'.
+  GT_REPLACE-CHAR   = 'ÓóÒòÕõỎỏỌọôỐốỒồỖỗỔổỘộơỚớỜờỠỡỞởỢợ'.
+  APPEND GT_REPLACE.
+
+  GT_REPLACE-UNSIGN = 'u'.
+  GT_REPLACE-CHAR   = 'ÚúÙùŨũỦủỤụưỨứỪừỮữỬửỰự'.
+  APPEND GT_REPLACE.
+
+  GT_REPLACE-UNSIGN = 'y'.
+  GT_REPLACE-CHAR   = 'ÝýỲỳỸỹỶỷỴỵ'.
+  APPEND GT_REPLACE.
+
+
+  GT_REPLACE-UNSIGN = ''.
+  GT_REPLACE-CHAR   = '(~`̉̉̉@#$%^*()_+=:;<>?/][{}\ )):,"' && `'`.
+
+  APPEND GT_REPLACE.
+  CLEAR GT_REPLACE.
+ENDFORM.                    " GET_REPLACE_DATE
+
+*&---------------------------------------------------------------------*
+*&      Form  CALCULATION
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->P_GW_R1  text
+*      -->P_GW_R1  text
+*      -->P_GT_POSTFIX  text
+*      <--P_GW_R1  text
+*----------------------------------------------------------------------*
+FORM CALCULATION  USING    P_R2       TYPE DEC20_2
+                           P_POSTFIX  TYPE STRING
+                  CHANGING P_R1       TYPE DEC20_2.
+  CASE P_POSTFIX.
+    WHEN '+'.
+      P_R1 = P_R2 + P_R1.
+    WHEN '-'.
+      P_R1 = P_R2 - P_R1.
+    WHEN '*'.
+      P_R1 = P_R2 * P_R1.
+    WHEN '/'.
+      P_R1 = P_R2 / P_R1.
+  ENDCASE.
+
+ENDFORM.                    " CALCULATION
+*&---------------------------------------------------------------------*
+*&      Form  CHECK_NUMBER
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->P_GT_POSTFIX  text
+*----------------------------------------------------------------------*
+FORM CHECK_NUMBER  USING    P_POSTFIX.
+  DATA: OUTPUT_INTEGER TYPE P.
+
+  CATCH SYSTEM-EXCEPTIONS
+    ARITHMETIC_ERRORS = 1
+    CONVERSION_ERRORS = 2.
+    CONDENSE P_POSTFIX NO-GAPS.
+    OUTPUT_INTEGER = P_POSTFIX.
+  ENDCATCH.
+ENDFORM.                    " CHECK_NUMBER
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_TOP_HTML
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+*FORM ALV_GRID_TOP_HTML
+*  USING LPS_DYNDOC_ID TYPE REF TO CL_DD_DOCUMENT.
+*
+*  EXPORT IT_LIST_COMMENTARY
+*    FROM GT_HEADER TO MEMORY ID 'DYNDOS_FOR_ALV'.
+*
+*  CALL FUNCTION 'REUSE_ALV_GRID_COMMENTARY_SET'
+*    EXPORTING
+*      DOCUMENT = LPS_DYNDOC_ID
+*      BOTTOM   = SPACE.
+*
+*ENDFORM.                    "ALV_GRID_TOP_HTML
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_STATUS_SET
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+FORM ALV_GRID_PF_STATUS_SET
+    USING RT_EXTAB TYPE KKBLO_T_EXTAB.
+
+  CHECK GW_CALLBACK_PF_STATUS_SET IS NOT INITIAL
+    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+
+  PERFORM (GW_CALLBACK_PF_STATUS_SET) IN PROGRAM (GW_CALLBACK_PROGRAM)
+    USING RT_EXTAB.
+
+
+ENDFORM.                    "ALV_GRID_STATUS_SET
+**&---------------------------------------------------------------------*
+
+FORM ALV_GRID_TOP_HTML USING LPS_DYNDOC_ID TYPE REF TO CL_DD_DOCUMENT.
+  CHECK GW_CALLBACK_HTML_TOP_OF_PAGE IS NOT INITIAL
+    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+
+  PERFORM (GW_CALLBACK_HTML_TOP_OF_PAGE) IN PROGRAM (GW_CALLBACK_PROGRAM)
+    USING LPS_DYNDOC_ID.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_USER_COMMAND
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+FORM ALV_GRID_USER_COMMAND
+    USING R_UCOMM     TYPE SY-UCOMM
+          RS_SELFIELD TYPE SLIS_SELFIELD.
+
+  CHECK GW_CALLBACK_USER_COMMAND IS NOT INITIAL
+    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+
+  PERFORM (GW_CALLBACK_USER_COMMAND) IN PROGRAM (GW_CALLBACK_PROGRAM)
+    USING R_UCOMM RS_SELFIELD.
+ENDFORM.                    "ALV_GRID_USER_COMMAND
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_TOP_OF_PAGE
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+FORM ALV_GRID_TOP_OF_PAGE.
+
+  CHECK GW_CALLBACK_TOP_OF_PAGE IS NOT INITIAL
+    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+
+  PERFORM (GW_CALLBACK_TOP_OF_PAGE) IN PROGRAM (GW_CALLBACK_PROGRAM).
+
+ENDFORM.                    "ALV_GRID_TOP_OF_PAGE
+
+*&---------------------------------------------------------------------*
+*&      Form  ALV_GRID_HTML_END_OF_LIST
+*&---------------------------------------------------------------------*
+*       Show top HTML of ALV
+*----------------------------------------------------------------------*
+*      -->LPS_DYNDOC_ID  Document ID
+*----------------------------------------------------------------------*
+FORM ALV_GRID_HTML_END_OF_LIST
+  USING LPS_DYNDOC_ID TYPE REF TO CL_DD_DOCUMENT.
+
+  CHECK GW_CALLBACK_HTML_END_OF_LIST IS NOT INITIAL
+    AND GW_CALLBACK_PROGRAM IS NOT INITIAL.
+
+  PERFORM (GW_CALLBACK_HTML_END_OF_LIST)
+    IN PROGRAM (GW_CALLBACK_PROGRAM).
+
+ENDFORM.                    "ALV_GRID_HTML_END_OF_LIST
+*----------------------------------------------------------------------*
+*       CLASS lcl_event_receiver DEFINITION
+*----------------------------------------------------------------------*
+CLASS LCL_EVENT_RECEIVER DEFINITION.
+  PUBLIC SECTION.
+    CLASS-METHODS:
+      HANDLE_AFTER_REFRESH
+        FOR EVENT AFTER_REFRESH OF CL_GUI_ALV_GRID,
+
+      HANDLE_BUTTON_CLICK
+        FOR EVENT BUTTON_CLICK OF CL_GUI_ALV_GRID
+        IMPORTING ES_COL_ID ES_ROW_NO,
+
+      HANDLE_HOTSPOT_CLICK
+        FOR EVENT HOTSPOT_CLICK OF CL_GUI_ALV_GRID
+        IMPORTING E_ROW_ID E_COLUMN_ID,
+
+      HANDLE_DATA_CHANGED
+        FOR EVENT DATA_CHANGED  OF  CL_GUI_ALV_GRID
+        IMPORTING ER_DATA_CHANGED SENDER,
+
+      HANDLE_TOP_OF_PAGE
+        FOR EVENT TOP_OF_PAGE  OF CL_GUI_ALV_GRID
+        IMPORTING E_DYNDOC_ID.
+ENDCLASS.                    "lcl_event_receiver DEFINITION
+*----------------------------------------------------------------------*
+*       CLASS lcl_event_receiver IMPLEMENTATION
+*----------------------------------------------------------------------*
+CLASS LCL_EVENT_RECEIVER IMPLEMENTATION.
+  METHOD HANDLE_AFTER_REFRESH.
+    DATA: I_TITLE   TYPE LVC_TITLE.
+    DATA: LT_FILTER TYPE LVC_T_FIDX.
+    CHECK SY-UCOMM NE '&F03'.
+    CHECK SY-UCOMM NE '&F15'.
+    CHECK SY-UCOMM NE '&F12'.
+
+    CALL METHOD GR_GRID->GET_FILTERED_ENTRIES
+      IMPORTING
+        ET_FILTERED_ENTRIES = LT_FILTER.
+
+
+    DATA(LT_ROW_FILTERED) = LINES( LT_FILTER ).
+    DATA(LW_COUNT) = GW_COUNT - LT_ROW_FILTERED.
+    WRITE LW_COUNT TO I_TITLE.
+    CONDENSE I_TITLE.
+    CONCATENATE 'Number of entries:' I_TITLE INTO I_TITLE SEPARATED BY SPACE.
+    CALL METHOD GR_GRID->SET_GRIDTITLE
+      EXPORTING
+        I_GRIDTITLE = I_TITLE.
+  ENDMETHOD.
+
+  METHOD HANDLE_BUTTON_CLICK.
+    PERFORM (GW_CALLBACK_BUTTON_CLICK) IN PROGRAM (GW_CALLBACK_PROGRAM)
+      USING ES_COL_ID ES_ROW_NO.
+  ENDMETHOD.
+
+  METHOD HANDLE_HOTSPOT_CLICK.
+    PERFORM (GW_CALLBACK_HOTSPOT_CLICK) IN PROGRAM (GW_CALLBACK_PROGRAM)
+      USING E_ROW_ID E_COLUMN_ID.
+  ENDMETHOD.
+
+  METHOD HANDLE_DATA_CHANGED.
+    DATA: LS_STABLE TYPE LVC_S_STBL VALUE 'XX'.
+    IF GW_CALLBACK_DATA_CHANGED IS NOT INITIAL.
+      PERFORM (GW_CALLBACK_DATA_CHANGED) IN PROGRAM (GW_CALLBACK_PROGRAM)
+        USING ER_DATA_CHANGED.
+      SENDER->REFRESH_TABLE_DISPLAY( IS_STABLE = LS_STABLE ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD HANDLE_TOP_OF_PAGE.
+    IF GW_CALLBACK_EVENT_TOP_OF_PAGE IS NOT INITIAL.
+      PERFORM (GW_CALLBACK_EVENT_TOP_OF_PAGE) IN PROGRAM (GW_CALLBACK_PROGRAM)
+         USING DG_DYNDOC_ID.
+    ENDIF.
+  ENDMETHOD.                            "top_of_page
+ENDCLASS.                    "lcl_event_receiver IMPLEMENTATION
+FORM ALV_EVENT_CALLER_EXIT USING CS_DATA TYPE SLIS_DATA_CALLER_EXIT.
+  CALL FUNCTION 'GET_GLOBALS_FROM_SLVC_FULLSCR'
+    IMPORTING
+      E_GRID = GR_GRID.
+  CALL METHOD GR_GRID->CHECK_CHANGED_DATA.
+*  gr_grid->set_ready_for_input( 1 ).
+  GR_GRID->REGISTER_EDIT_EVENT( CL_GUI_ALV_GRID=>MC_EVT_MODIFIED ).
+  IF GT_DROPDOWN IS NOT INITIAL.
+    GR_GRID->SET_DROP_DOWN_TABLE( IT_DROP_DOWN = GT_DROPDOWN ).
+  ENDIF.
+  SET HANDLER  LCL_EVENT_RECEIVER=>HANDLE_DATA_CHANGED  FOR GR_GRID.
+  SET HANDLER  LCL_EVENT_RECEIVER=>HANDLE_AFTER_REFRESH FOR GR_GRID.
+  SET HANDLER  LCL_EVENT_RECEIVER=>HANDLE_BUTTON_CLICK  FOR GR_GRID.
+  SET HANDLER  LCL_EVENT_RECEIVER=>HANDLE_TOP_OF_PAGE   FOR GR_GRID.
+  SET HANDLER  LCL_EVENT_RECEIVER=>HANDLE_HOTSPOT_CLICK FOR GR_GRID.
+
+  IF GW_CALLBACK_EVENT_TOP_OF_PAGE IS NOT INITIAL.
+    CALL METHOD DG_DYNDOC_ID->INITIALIZE_DOCUMENT.
+    CALL METHOD GR_GRID->LIST_PROCESSING_EVENTS
+      EXPORTING
+        I_EVENT_NAME = 'TOP_OF_PAGE'
+        I_DYNDOC_ID  = DG_DYNDOC_ID.
+  ENDIF.
+ENDFORM.
+
+*
+* 

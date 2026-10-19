@@ -1,0 +1,651 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=ISO-8859-1" />
+<title>Dictionary object- EINA</title>
+<style type="text/css">
+  th{text-align:left}
+  .cell{
+     font-family:"Courier New", Courier, monospace;
+     color:#000;
+     font-size:12px;
+     background-color:#F2F4F7;
+  }
+  .cell td { border: thin solid #ccc; }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Table: EINA</h2>
+  <h3>Description: Purchasing Info Record: General Data</h3></td>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Row</th>
+  <th>Field name</th>
+  <th>Position</th>
+  <th>Key</th>
+  <th>Data element</th>
+  <th>Domain</th>
+  <th>Datatype</th>
+  <th>Length</th>
+  <th>Lowercase</th>
+  <th>Domain text</th>
+</tr>
+<tr class="cell">
+  <td> 1</td>
+  <td>.INCLUDE</td>
+  <td>39</td>
+  <td>&nbsp;</td>
+  <td>EINA_INCL_EEW_PS</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>0</td>
+  <td>&nbsp;</td>
+  <td>Persistent Structure for Inforecords</td>
+</tr>
+<tr class="cell">
+  <td> 2</td>
+  <td>ANZPU</td>
+  <td>35</td>
+  <td>&nbsp;</td>
+  <td>ANZPU</td>
+  <td>MENG13</td>
+  <td>QUAN</td>
+  <td>13</td>
+  <td>&nbsp;</td>
+  <td>Number of Points</td>
+</tr>
+<tr class="cell">
+  <td> 3</td>
+  <td>DUMMY_EINA_INCL_EEW_PS</td>
+  <td>40</td>
+  <td>&nbsp;</td>
+  <td>EINA_INCL_EEW</td>
+  <td>EINA_INCL_EEW</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Data element for Inforecords extensibility</td>
+</tr>
+<tr class="cell">
+  <td> 4</td>
+  <td>ERDAT</td>
+  <td>7</td>
+  <td>&nbsp;</td>
+  <td>ERDAT</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Record Created On</td>
+</tr>
+<tr class="cell">
+  <td> 5</td>
+  <td>ERNAM</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>ERNAM</td>
+  <td>USNAM</td>
+  <td>CHAR</td>
+  <td>12</td>
+  <td>&nbsp;</td>
+  <td>Name of Person Responsible for Creating the Object</td>
+</tr>
+<tr class="cell">
+  <td> 6</td>
+  <td>IDNLF</td>
+  <td>14</td>
+  <td>&nbsp;</td>
+  <td>IDNLF</td>
+  <td>IDNEX</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>&nbsp;</td>
+  <td>Material Number Used by Supplier</td>
+</tr>
+<tr class="cell">
+  <td> 7</td>
+  <td>INFNR</td>
+  <td>2</td>
+  <td>X</td>
+  <td>INFNR</td>
+  <td>INFNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Number of purchasing info record</td>
+</tr>
+<tr class="cell">
+  <td> 8</td>
+  <td>ISEOPBLOCKED</td>
+  <td>42</td>
+  <td>&nbsp;</td>
+  <td>EOPBLOCKED</td>
+  <td>EOPBLOCKED</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Business Purpose Completed</td>
+</tr>
+<tr class="cell">
+  <td> 9</td>
+  <td>KOLIF</td>
+  <td>34</td>
+  <td>&nbsp;</td>
+  <td>KOLIF</td>
+  <td>LIFNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Prior Supplier</td>
+</tr>
+<tr class="cell">
+  <td>10</td>
+  <td>LASTCHANGEDATETIME</td>
+  <td>41</td>
+  <td>&nbsp;</td>
+  <td>TIMESTAMPL</td>
+  <td>TZNTSTMPL</td>
+  <td>DEC</td>
+  <td>21</td>
+  <td>&nbsp;</td>
+  <td>UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)</td>
+</tr>
+<tr class="cell">
+  <td>11</td>
+  <td>LIFAB</td>
+  <td>32</td>
+  <td>&nbsp;</td>
+  <td>LIFAB</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Available (Deliverable) From</td>
+</tr>
+<tr class="cell">
+  <td>12</td>
+  <td>LIFBI</td>
+  <td>33</td>
+  <td>&nbsp;</td>
+  <td>LIFBI</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Available (Deliverable) Until</td>
+</tr>
+<tr class="cell">
+  <td>13</td>
+  <td>LIFNR</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>ELIFN</td>
+  <td>LIFNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Vendor's account number</td>
+</tr>
+<tr class="cell">
+  <td>14</td>
+  <td>LMEIN</td>
+  <td>25</td>
+  <td>&nbsp;</td>
+  <td>MEINS</td>
+  <td>MEINS</td>
+  <td>UNIT</td>
+  <td>3</td>
+  <td>X</td>
+  <td>Base Unit of Measure</td>
+</tr>
+<tr class="cell">
+  <td>15</td>
+  <td>LOEKZ</td>
+  <td>6</td>
+  <td>&nbsp;</td>
+  <td>ILOEA</td>
+  <td>XFELD</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Purchasing info: General data flagged for deletion</td>
+</tr>
+<tr class="cell">
+  <td>16</td>
+  <td>LTSNR</td>
+  <td>28</td>
+  <td>&nbsp;</td>
+  <td>LTSNR</td>
+  <td>LTSNR</td>
+  <td>CHAR</td>
+  <td>6</td>
+  <td>&nbsp;</td>
+  <td>Supplier Subrange</td>
+</tr>
+<tr class="cell">
+  <td>17</td>
+  <td>LTSSF</td>
+  <td>29</td>
+  <td>&nbsp;</td>
+  <td>LTSSF</td>
+  <td>NUMC5</td>
+  <td>NUMC</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>Sort Sequence Number</td>
+</tr>
+<tr class="cell">
+  <td>18</td>
+  <td>MAHN1</td>
+  <td>17</td>
+  <td>&nbsp;</td>
+  <td>MAHN1</td>
+  <td>MAHNT</td>
+  <td>DEC</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Number of Days for First Reminder/Expediter</td>
+</tr>
+<tr class="cell">
+  <td>19</td>
+  <td>MAHN2</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>MAHN2</td>
+  <td>MAHNT</td>
+  <td>DEC</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Number of Days for Second Reminder/Expediter</td>
+</tr>
+<tr class="cell">
+  <td>20</td>
+  <td>MAHN3</td>
+  <td>19</td>
+  <td>&nbsp;</td>
+  <td>MAHN3</td>
+  <td>MAHNT</td>
+  <td>DEC</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Number of Days for Third Reminder/Expediter</td>
+</tr>
+<tr class="cell">
+  <td>21</td>
+  <td>MANDT</td>
+  <td>1</td>
+  <td>X</td>
+  <td>MANDT</td>
+  <td>MANDT</td>
+  <td>CLNT</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Client</td>
+</tr>
+<tr class="cell">
+  <td>22</td>
+  <td>MATKL</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>MATKL</td>
+  <td>MATKL</td>
+  <td>CHAR</td>
+  <td>9</td>
+  <td>&nbsp;</td>
+  <td>Material Group</td>
+</tr>
+<tr class="cell">
+  <td>23</td>
+  <td>MATNR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>MATNR</td>
+  <td>MATNR</td>
+  <td>CHAR</td>
+  <td>40</td>
+  <td>&nbsp;</td>
+  <td>Material Number</td>
+</tr>
+<tr class="cell">
+  <td>24</td>
+  <td>MEINS</td>
+  <td>11</td>
+  <td>&nbsp;</td>
+  <td>BSTME</td>
+  <td>MEINS</td>
+  <td>UNIT</td>
+  <td>3</td>
+  <td>X</td>
+  <td>Purchase Order Unit of Measure</td>
+</tr>
+<tr class="cell">
+  <td>25</td>
+  <td>MFRNR</td>
+  <td>38</td>
+  <td>&nbsp;</td>
+  <td>MFRNR1</td>
+  <td>LIFNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Manufacturer</td>
+</tr>
+<tr class="cell">
+  <td>26</td>
+  <td>PUNEI</td>
+  <td>36</td>
+  <td>&nbsp;</td>
+  <td>PUNEI</td>
+  <td>MEINS</td>
+  <td>UNIT</td>
+  <td>3</td>
+  <td>X</td>
+  <td>Points Unit</td>
+</tr>
+<tr class="cell">
+  <td>27</td>
+  <td>REGIO</td>
+  <td>26</td>
+  <td>&nbsp;</td>
+  <td>REGIO</td>
+  <td>REGIO</td>
+  <td>CHAR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Region (State, Province, County)</td>
+</tr>
+<tr class="cell">
+  <td>28</td>
+  <td>RELIF</td>
+  <td>37</td>
+  <td>&nbsp;</td>
+  <td>RELIF</td>
+  <td>XFELD</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Regular Supplier</td>
+</tr>
+<tr class="cell">
+  <td>29</td>
+  <td>RUECK</td>
+  <td>31</td>
+  <td>&nbsp;</td>
+  <td>W_RUECKNV</td>
+  <td>W_RUECKNV</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Return Agreement</td>
+</tr>
+<tr class="cell">
+  <td>30</td>
+  <td>SORTL</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>SORTI</td>
+  <td>CHAR10</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Sort Term for Non-Stock Info Records</td>
+</tr>
+<tr class="cell">
+  <td>31</td>
+  <td>TELF1</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>TELF0</td>
+  <td>TEXT16</td>
+  <td>CHAR</td>
+  <td>16</td>
+  <td>X</td>
+  <td>Supplier's Telephone Number</td>
+</tr>
+<tr class="cell">
+  <td>32</td>
+  <td>TXZ01</td>
+  <td>9</td>
+  <td>&nbsp;</td>
+  <td>EINATX</td>
+  <td>TEXT40</td>
+  <td>CHAR</td>
+  <td>40</td>
+  <td>X</td>
+  <td>Short Text for Purchasing Info Record</td>
+</tr>
+<tr class="cell">
+  <td>33</td>
+  <td>UMREN</td>
+  <td>13</td>
+  <td>&nbsp;</td>
+  <td>UMBSN</td>
+  <td>UMBSN</td>
+  <td>DEC</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>Denominator for Conversion of Order Unit to Base Unit</td>
+</tr>
+<tr class="cell">
+  <td>34</td>
+  <td>UMREZ</td>
+  <td>12</td>
+  <td>&nbsp;</td>
+  <td>UMBSZ</td>
+  <td>UMBSZ</td>
+  <td>DEC</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>Numerator for Conversion of Order Unit to Base Unit</td>
+</tr>
+<tr class="cell">
+  <td>35</td>
+  <td>URZDT</td>
+  <td>21</td>
+  <td>&nbsp;</td>
+  <td>URZDT</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Certificate of Origin Valid Until</td>
+</tr>
+<tr class="cell">
+  <td>36</td>
+  <td>URZLA</td>
+  <td>22</td>
+  <td>&nbsp;</td>
+  <td>ULAND</td>
+  <td>LAND1</td>
+  <td>CHAR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Country/Region of Issue of Certificate of Origin</td>
+</tr>
+<tr class="cell">
+  <td>37</td>
+  <td>URZNR</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>URZNR</td>
+  <td>URZNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Certificate Number</td>
+</tr>
+<tr class="cell">
+  <td>38</td>
+  <td>URZTP</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>URZTP</td>
+  <td>URZTP</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Certificate Category</td>
+</tr>
+<tr class="cell">
+  <td>39</td>
+  <td>URZZT</td>
+  <td>24</td>
+  <td>&nbsp;</td>
+  <td>URZZT</td>
+  <td>URZZT</td>
+  <td>CHAR</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>Number</td>
+</tr>
+<tr class="cell">
+  <td>40</td>
+  <td>VABME</td>
+  <td>27</td>
+  <td>&nbsp;</td>
+  <td>VABME</td>
+  <td>VABME</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Variable Purchase Order Unit Active</td>
+</tr>
+<tr class="cell">
+  <td>41</td>
+  <td>VERKF</td>
+  <td>15</td>
+  <td>&nbsp;</td>
+  <td>VERKF</td>
+  <td>TEXT30</td>
+  <td>CHAR</td>
+  <td>30</td>
+  <td>X</td>
+  <td>Salesperson Responsible in the Event of Queries</td>
+</tr>
+<tr class="cell">
+  <td>42</td>
+  <td>WGLIF</td>
+  <td>30</td>
+  <td>&nbsp;</td>
+  <td>WGLIF</td>
+  <td>CHAR18</td>
+  <td>CHAR</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>Supplier Material Group</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+<br/>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Fixed Domain Values </h2>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Domain Name</th>
+  <th>Value Low</th>
+  <th>Value High</th>
+  <th>Text</th>
+</tr>
+<tr class="cell">
+  <td>EOPBLOCKED</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Business Purpose Completed, End of Purpose Reached</td>
+</tr>
+<tr class="cell">
+  <td>EOPBLOCKED</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>Ongoing Business, Active Purpose</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Yes</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>No</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Yes</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>No</td>
+</tr>
+<tr class="cell">
+  <td>VABME</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>Not active</td>
+</tr>
+<tr class="cell">
+  <td>VABME</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Active</td>
+</tr>
+<tr class="cell">
+  <td>VABME</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Active with own price</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+   <tr>
+<td class="footer">Extracted by EKB-Tech  - Chris. 20260928. Sap Release 757</td>
+   </tr>
+</table>
+</body>
+</html>

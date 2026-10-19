@@ -1,0 +1,84 @@
+﻿FUNCTION ZCORE_FM_GET_LONG_TEXT_MULTI.
+*"----------------------------------------------------------------------
+*"*"Local Interface:
+*"  TABLES
+*"      T_TEXT_TABLE TYPE  TEXT_LH OPTIONAL
+*"      T_LTEXT STRUCTURE  ZST_LTEXT
+*"----------------------------------------------------------------------
+  DATA: LT_TEXT_TABLE  TYPE TEXT_LH,
+        LS_TEXT_TABLE  TYPE ITCLH,
+        LT_ERROR       TYPE TEXT_LH,
+        LT_TEXT_HEADER TYPE TABLE OF THEAD,
+        LS_TEXT_HEADER TYPE THEAD,
+        LS_TLINE       TYPE TLINE.
+  FIELD-SYMBOLS: <LF_LTEXT> TYPE ZST_LTEXT.
+
+  "Fill language
+  LOOP AT T_LTEXT ASSIGNING <LF_LTEXT>.
+    IF <LF_LTEXT>-TDSPRAS IS INITIAL.
+      <LF_LTEXT>-TDSPRAS = SY-LANGU.
+    ENDIF.
+  ENDLOOP.
+  SORT T_LTEXT BY TDOBJECT  ASCENDING
+                  TDNAME    ASCENDING
+                  TDID      ASCENDING
+                  TDSPRAS   ASCENDING.
+  DELETE ADJACENT DUPLICATES FROM T_LTEXT COMPARING TDOBJECT TDNAME TDID TDSPRAS.
+  "Fill Text Header
+  MOVE-CORRESPONDING T_LTEXT[] TO LT_TEXT_HEADER.
+
+  "Get Multiple Long Text
+  CALL FUNCTION 'READ_TEXT_TABLE'
+    IMPORTING
+      TEXT_TABLE              = LT_TEXT_TABLE
+      ERROR_TABLE             = LT_ERROR
+    TABLES
+      TEXT_HEADERS            = LT_TEXT_HEADER
+    EXCEPTIONS
+      WRONG_ACCESS_TO_ARCHIVE = 1
+      OTHERS                  = 2.
+  IF SY-SUBRC = 0.
+    T_TEXT_TABLE[] = LT_TEXT_TABLE[].
+    LOOP AT LT_TEXT_TABLE INTO LS_TEXT_TABLE.
+      READ TABLE T_LTEXT ASSIGNING <LF_LTEXT>
+        WITH KEY TDOBJECT = LS_TEXT_TABLE-HEADER-TDOBJECT
+                 TDNAME = LS_TEXT_TABLE-HEADER-TDNAME
+                 TDID = LS_TEXT_TABLE-HEADER-TDID
+                 TDSPRAS = LS_TEXT_TABLE-HEADER-TDSPRAS BINARY SEARCH.
+      IF SY-SUBRC = 0.
+        LOOP AT LS_TEXT_TABLE-LINES INTO LS_TLINE.
+          CONCATENATE <LF_LTEXT>-LTEXT1 LS_TLINE-TDLINE INTO <LF_LTEXT>-LTEXT1 .
+*          CONCATENATE <LF_LTEXT>-LTEXT2 LS_TLINE-TDLINE INTO <LF_LTEXT>-LTEXT2 SEPARATED BY SPACE.
+*          CONCATENATE <LF_LTEXT>-LTEXT3 LS_TLINE-TDLINE INTO <LF_LTEXT>-LTEXT3 SEPARATED BY SPACE.
+        ENDLOOP.
+        "Replace special character when use special character like & of LTEXT1
+        IF <LF_LTEXT>-LTEXT1 CA '&'.
+          REPLACE ALL OCCURRENCES OF '<(>' IN <LF_LTEXT>-LTEXT1 WITH SPACE.
+          REPLACE ALL OCCURRENCES OF '<)>' IN <LF_LTEXT>-LTEXT1 WITH SPACE.
+        ENDIF.
+        "Replace special character when use special character like & of LTEXT2
+*        IF <LF_LTEXT>-LTEXT2 CA '&'.
+*          REPLACE ALL OCCURRENCES OF '<(>' IN <LF_LTEXT>-LTEXT2 WITH SPACE.
+*          REPLACE ALL OCCURRENCES OF '<)>' IN <LF_LTEXT>-LTEXT2 WITH SPACE.
+*        ENDIF.
+*        "Replace special character when use special character like & of LTEXT3
+*        IF <LF_LTEXT>-LTEXT3 CA '&'.
+*          REPLACE ALL OCCURRENCES OF '<(>' IN <LF_LTEXT>-LTEXT3 WITH SPACE.
+*          REPLACE ALL OCCURRENCES OF '<)>' IN <LF_LTEXT>-LTEXT3 WITH SPACE.
+*        ENDIF.
+        CONDENSE: <LF_LTEXT>-LTEXT1.
+      ENDIF.
+    ENDLOOP.
+  ENDIF.
+  IF LT_TEXT_TABLE[] IS INITIAL.
+    FREE T_LTEXT.
+  ENDIF.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

@@ -1,0 +1,82 @@
+﻿FUNCTION ZCORE_FM_SAVE_LONG_TEXT_2.
+*"--------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(I_TDOBJECT) TYPE  TDOBJECT
+*"     REFERENCE(I_TDNAME) TYPE  TDOBNAME
+*"     REFERENCE(I_TDID) TYPE  TDID
+*"     REFERENCE(I_TDSPRAS) TYPE  SPRAS DEFAULT 'E'
+*"     REFERENCE(I_LONGTEXT) TYPE  CHAR255
+*"--------------------------------------------------------------------
+DATA : GS_HEADER TYPE THEAD,
+         GT_LINE   TYPE TABLE OF TLINE,
+         GS_LINE   TYPE TLINE.
+  DATA LV_STRING      TYPE STRING.
+  DATA LT_STR_COMP    TYPE TABLE OF SWASTRTAB WITH HEADER LINE.
+
+  GS_HEADER-TDOBJECT = I_TDOBJECT.
+  GS_HEADER-TDNAME   = I_TDNAME. "sales order number or text name
+  GS_HEADER-TDID     =  I_TDID.    " Confirmation text - text id
+  IF I_TDSPRAS IS NOT INITIAL.
+    GS_HEADER-TDSPRAS = I_TDSPRAS.
+  ELSE.
+    GS_HEADER-TDSPRAS = SY-LANGU.
+  ENDIF.
+
+  LV_STRING = I_LONGTEXT.
+
+
+  CALL FUNCTION 'SWA_STRING_SPLIT'
+    EXPORTING
+      INPUT_STRING                 = LV_STRING
+      MAX_COMPONENT_LENGTH         = 132
+    TABLES
+      STRING_COMPONENTS            = LT_STR_COMP
+    EXCEPTIONS
+      MAX_COMPONENT_LENGTH_INVALID = 1
+      OTHERS                       = 2.
+
+  REFRESH GT_LINE.
+  LOOP AT LT_STR_COMP.
+    GS_LINE-TDLINE  = LT_STR_COMP-STR.
+    GS_LINE-TDFORMAT = '*'.              "paragraph format
+    APPEND GS_LINE TO GT_LINE.
+  ENDLOOP.
+  REFRESH LT_STR_COMP.
+
+
+  CALL FUNCTION 'SAVE_TEXT'
+    EXPORTING
+      CLIENT   = SY-MANDT
+      HEADER   = GS_HEADER
+    TABLES
+      LINES    = GT_LINE
+    EXCEPTIONS
+      ID       = 1
+      LANGUAGE = 2
+      NAME     = 3
+      OBJECT   = 4
+      OTHERS   = 5.
+  IF SY-SUBRC <> 0.
+    MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+             WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+  ENDIF.
+
+  CALL FUNCTION 'COMMIT_TEXT'
+    EXPORTING
+      OBJECT          = I_TDOBJECT
+      NAME            = I_TDNAME
+      ID              = I_TDID
+      LANGUAGE        = I_TDSPRAS
+      SAVEMODE_DIRECT = 'X'.
+
+  COMMIT WORK AND WAIT.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

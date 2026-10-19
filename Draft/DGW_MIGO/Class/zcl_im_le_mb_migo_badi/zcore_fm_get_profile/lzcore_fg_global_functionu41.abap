@@ -1,0 +1,135 @@
+﻿FUNCTION ZCORE_FM_SAVE_LONG_TEXT.
+*"--------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(I_TDOBJECT) TYPE  TDOBJECT
+*"     REFERENCE(I_TDNAME) TYPE  TDOBNAME
+*"     REFERENCE(I_TDID) TYPE  TDID
+*"     REFERENCE(I_TDSPRAS) TYPE  SPRAS DEFAULT 'E'
+*"     REFERENCE(I_LONGTEXT)
+*"     REFERENCE(I_LENGTH_SPLIT) TYPE  I DEFAULT 132
+*"--------------------------------------------------------------------
+DATA : GS_HEADER    TYPE THEAD,
+         GT_LINE      TYPE TABLE OF TLINE,
+         GS_LINE      TYPE TLINE,
+         LW_DELIMITER TYPE C.
+  DATA LV_STRING      TYPE STRING.
+  DATA LT_STR_COMP    TYPE TABLE OF SWASTRTAB WITH HEADER LINE.
+
+  GS_HEADER-TDOBJECT = I_TDOBJECT.
+  GS_HEADER-TDNAME   = I_TDNAME. "sales order number or text name
+  GS_HEADER-TDID     =  I_TDID.    " Confirmation text - text id
+  IF I_TDSPRAS IS NOT INITIAL.
+    GS_HEADER-TDSPRAS = I_TDSPRAS.
+  ELSE.
+    GS_HEADER-TDSPRAS = SY-LANGU.
+  ENDIF.
+
+  LV_STRING = I_LONGTEXT.
+
+  IF I_TDOBJECT = 'ZAP12'.
+    LW_DELIMITER = `, `.
+    DATA: LT_OUT_LINES       TYPE TABLE OF STRING,
+          LW_TEXTLINE(65535) TYPE C.
+
+    CLEAR: LW_TEXTLINE.
+    REFRESH LT_OUT_LINES.
+
+    LW_TEXTLINE = LV_STRING.
+
+    CALL FUNCTION 'RKD_WORD_WRAP'
+      EXPORTING
+        TEXTLINE            = LW_TEXTLINE
+        DELIMITER           = LW_DELIMITER
+        OUTPUTLEN           = I_LENGTH_SPLIT
+      TABLES
+        OUT_LINES           = LT_OUT_LINES
+      EXCEPTIONS
+        OUTPUTLEN_TOO_LARGE = 1
+        OTHERS              = 2.
+    IF NOT LT_OUT_LINES IS INITIAL.
+      LOOP AT LT_OUT_LINES INTO DATA(LS_OUT_LINE).
+        CLEAR LT_STR_COMP.
+        CONDENSE LS_OUT_LINE.
+        LT_STR_COMP-STR = LS_OUT_LINE.
+        APPEND LT_STR_COMP TO LT_STR_COMP.
+      ENDLOOP.
+    ENDIF.
+
+  ELSE.
+
+    CALL FUNCTION 'SWA_STRING_SPLIT'
+      EXPORTING
+        INPUT_STRING                 = LV_STRING
+        MAX_COMPONENT_LENGTH         = I_LENGTH_SPLIT
+      TABLES
+        STRING_COMPONENTS            = LT_STR_COMP
+      EXCEPTIONS
+        MAX_COMPONENT_LENGTH_INVALID = 1
+        OTHERS                       = 2.
+
+  ENDIF.
+
+  REFRESH GT_LINE.
+  LOOP AT LT_STR_COMP.
+    GS_LINE-TDLINE  = LT_STR_COMP-STR.
+    GS_LINE-TDFORMAT = '*'.              "paragraph format
+    APPEND GS_LINE TO GT_LINE.
+  ENDLOOP.
+  REFRESH LT_STR_COMP.
+
+
+  CALL FUNCTION 'SAVE_TEXT'
+    EXPORTING
+      CLIENT   = SY-MANDT
+      HEADER   = GS_HEADER
+    TABLES
+      LINES    = GT_LINE
+    EXCEPTIONS
+      ID       = 1
+      LANGUAGE = 2
+      NAME     = 3
+      OBJECT   = 4
+      OTHERS   = 5.
+  IF SY-SUBRC <> 0.
+    MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+             WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+  ENDIF.
+
+  CALL FUNCTION 'COMMIT_TEXT'
+    EXPORTING
+      OBJECT          = I_TDOBJECT
+      NAME            = I_TDNAME
+      ID              = I_TDID
+      LANGUAGE        = I_TDSPRAS
+      SAVEMODE_DIRECT = 'X'.
+
+  " NghiaNT.Citek enhance copy extras text to ztable
+  IF I_TDOBJECT = 'BELEG'.
+    DATA: LS_EXTRASTEX TYPE ZTB_FI_EXTRASTEX.
+    IF I_LONGTEXT IS INITIAL.
+      DELETE FROM ZTB_FI_EXTRASTEX
+       WHERE BUKRS = I_TDNAME+0(4)  AND
+             BELNR = I_TDNAME+4(10) AND
+             GJAHR = I_TDNAME+14(4) AND
+             ID    = I_TDID.
+    ELSE.
+      LS_EXTRASTEX-BUKRS = I_TDNAME+0(4).
+      LS_EXTRASTEX-BELNR = I_TDNAME+4(10).
+      LS_EXTRASTEX-GJAHR = I_TDNAME+14(4).
+      LS_EXTRASTEX-ID    = I_TDID.
+      LS_EXTRASTEX-VALUE = I_LONGTEXT.
+      MODIFY ZTB_FI_EXTRASTEX FROM LS_EXTRASTEX.
+    ENDIF.
+  ENDIF.
+
+  COMMIT WORK AND WAIT.
+
+
+
+
+
+ENDFUNCTION.
+
+*
+* 

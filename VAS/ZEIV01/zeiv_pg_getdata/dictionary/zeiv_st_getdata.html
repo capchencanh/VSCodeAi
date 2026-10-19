@@ -1,0 +1,777 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=ISO-8859-1" />
+<title>Dictionary object- ZEIV_ST_GETDATA</title>
+<style type="text/css">
+  th{text-align:left}
+  .cell{
+     font-family:"Courier New", Courier, monospace;
+     color:#000;
+     font-size:12px;
+     background-color:#F2F4F7;
+  }
+  .cell td { border: thin solid #ccc; }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Table: ZEIV_ST_GETDATA</h2>
+  <h3>Description: Structure get data</h3></td>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Row</th>
+  <th>Field name</th>
+  <th>Position</th>
+  <th>Key</th>
+  <th>Data element</th>
+  <th>Domain</th>
+  <th>Datatype</th>
+  <th>Length</th>
+  <th>Lowercase</th>
+  <th>Domain text</th>
+</tr>
+<tr class="cell">
+  <td> 1</td>
+  <td>AMOUNT</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>DMBTR</td>
+  <td>AFLE13D2O16N_TO_23D2O30N</td>
+  <td>CURR</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>Amount in local currency</td>
+</tr>
+<tr class="cell">
+  <td> 2</td>
+  <td>AWKEY</td>
+  <td>13</td>
+  <td>&nbsp;</td>
+  <td>AWKEY</td>
+  <td>AWKEY</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>Object key</td>
+</tr>
+<tr class="cell">
+  <td> 3</td>
+  <td>AWTYP</td>
+  <td>14</td>
+  <td>&nbsp;</td>
+  <td>AWTYP</td>
+  <td>AWTYP</td>
+  <td>CHAR</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>Reference procedure</td>
+</tr>
+<tr class="cell">
+  <td> 4</td>
+  <td>BADDR</td>
+  <td>27</td>
+  <td>&nbsp;</td>
+  <td>ZDE_BADDR</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Buyer Address</td>
+</tr>
+<tr class="cell">
+  <td> 5</td>
+  <td>BBACC</td>
+  <td>42</td>
+  <td>&nbsp;</td>
+  <td>ZDE_BBACC</td>
+  <td>TEXT20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>X</td>
+  <td>Buyer Bank Account</td>
+</tr>
+<tr class="cell">
+  <td> 6</td>
+  <td>BCODE</td>
+  <td>26</td>
+  <td>&nbsp;</td>
+  <td>ZDE_BCODE</td>
+  <td>TEXT20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>X</td>
+  <td>Buyer Tax Code</td>
+</tr>
+<tr class="cell">
+  <td> 7</td>
+  <td>BELNR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>BELNR_D</td>
+  <td>BELNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Accounting Document Number</td>
+</tr>
+<tr class="cell">
+  <td> 8</td>
+  <td>BILLD</td>
+  <td>31</td>
+  <td>&nbsp;</td>
+  <td>ZDE_BILLD</td>
+  <td>TEXT10</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>X</td>
+  <td>Billing Document/BillCode</td>
+</tr>
+<tr class="cell">
+  <td> 9</td>
+  <td>BKTXT</td>
+  <td>33</td>
+  <td>&nbsp;</td>
+  <td>BKTXT</td>
+  <td>TEXT25</td>
+  <td>CHAR</td>
+  <td>25</td>
+  <td>X</td>
+  <td>Document Header Text</td>
+</tr>
+<tr class="cell">
+  <td>10</td>
+  <td>BLART</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>BLART</td>
+  <td>BLART</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Document type</td>
+</tr>
+<tr class="cell">
+  <td>11</td>
+  <td>BLDAT</td>
+  <td>9</td>
+  <td>&nbsp;</td>
+  <td>BLDAT</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Document Date in Document</td>
+</tr>
+<tr class="cell">
+  <td>12</td>
+  <td>BNAME</td>
+  <td>25</td>
+  <td>&nbsp;</td>
+  <td>ZDE_BNAME</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Buyer name</td>
+</tr>
+<tr class="cell">
+  <td>13</td>
+  <td>BUDAT</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>BUDAT</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Posting Date in the Document</td>
+</tr>
+<tr class="cell">
+  <td>14</td>
+  <td>BUKRS</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>BUKRS</td>
+  <td>BUKRS</td>
+  <td>CHAR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Company Code</td>
+</tr>
+<tr class="cell">
+  <td>15</td>
+  <td>BUNAM</td>
+  <td>24</td>
+  <td>&nbsp;</td>
+  <td>ZDE_BUNAM</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Company name</td>
+</tr>
+<tr class="cell">
+  <td>16</td>
+  <td>CAN_CU</td>
+  <td>40</td>
+  <td>&nbsp;</td>
+  <td>ZDE_CAN_CU</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Căn cứ</td>
+</tr>
+<tr class="cell">
+  <td>17</td>
+  <td>CHECK</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>CHECKBOX</td>
+  <td>FUNC</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Checkbox in Reporting</td>
+</tr>
+<tr class="cell">
+  <td>18</td>
+  <td>CHECK_REPLACE</td>
+  <td>56</td>
+  <td>&nbsp;</td>
+  <td>FLAG</td>
+  <td>FLAG</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>General Flag</td>
+</tr>
+<tr class="cell">
+  <td>19</td>
+  <td>CPUDT</td>
+  <td>7</td>
+  <td>&nbsp;</td>
+  <td>CPUDT</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Day On Which Accounting Document Was Entered</td>
+</tr>
+<tr class="cell">
+  <td>20</td>
+  <td>EMAIL</td>
+  <td>28</td>
+  <td>&nbsp;</td>
+  <td>ZDE_EMAIL_N</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Email</td>
+</tr>
+<tr class="cell">
+  <td>21</td>
+  <td>FKART</td>
+  <td>49</td>
+  <td>&nbsp;</td>
+  <td>FKART</td>
+  <td>FKART</td>
+  <td>CHAR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Billing Type</td>
+</tr>
+<tr class="cell">
+  <td>22</td>
+  <td>FKDAT</td>
+  <td>47</td>
+  <td>&nbsp;</td>
+  <td>FKDAT</td>
+  <td>DATUM</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Billing Date</td>
+</tr>
+<tr class="cell">
+  <td>23</td>
+  <td>GJAHR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>GJAHR</td>
+  <td>GJAHR</td>
+  <td>NUMC</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Fiscal Year</td>
+</tr>
+<tr class="cell">
+  <td>24</td>
+  <td>GROSS_AMOUNT</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>DMBTR</td>
+  <td>AFLE13D2O16N_TO_23D2O30N</td>
+  <td>CURR</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>Amount in local currency</td>
+</tr>
+<tr class="cell">
+  <td>25</td>
+  <td>GROSS_AMOUNT_LC</td>
+  <td>21</td>
+  <td>&nbsp;</td>
+  <td>DMBTR</td>
+  <td>AFLE13D2O16N_TO_23D2O30N</td>
+  <td>CURR</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>Amount in local currency</td>
+</tr>
+<tr class="cell">
+  <td>26</td>
+  <td>IFORM</td>
+  <td>29</td>
+  <td>&nbsp;</td>
+  <td>ZDE_IFORM</td>
+  <td>TEXT20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>X</td>
+  <td>InvoiceForm</td>
+</tr>
+<tr class="cell">
+  <td>27</td>
+  <td>ISERIAL</td>
+  <td>30</td>
+  <td>&nbsp;</td>
+  <td>ZDE_ISERIAL</td>
+  <td>TEXT20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>X</td>
+  <td>InvoiceSerial</td>
+</tr>
+<tr class="cell">
+  <td>28</td>
+  <td>JSON_REQ</td>
+  <td>54</td>
+  <td>&nbsp;</td>
+  <td>CHAR4</td>
+  <td>CHAR4</td>
+  <td>CHAR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Undefined range (can be used for patch levels)</td>
+</tr>
+<tr class="cell">
+  <td>29</td>
+  <td>KUNNR</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>KUNNR</td>
+  <td>KUNNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Customer Number</td>
+</tr>
+<tr class="cell">
+  <td>30</td>
+  <td>KURRF</td>
+  <td>17</td>
+  <td>&nbsp;</td>
+  <td>ZDE_KURRF_N</td>
+  <td>&nbsp;</td>
+  <td>DEC</td>
+  <td>17</td>
+  <td>&nbsp;</td>
+  <td>Exchange rate</td>
+</tr>
+<tr class="cell">
+  <td>31</td>
+  <td>KURSF</td>
+  <td>46</td>
+  <td>&nbsp;</td>
+  <td>KURSF</td>
+  <td>KURSF</td>
+  <td>DEC</td>
+  <td>9</td>
+  <td>&nbsp;</td>
+  <td>Exchange rate</td>
+</tr>
+<tr class="cell">
+  <td>32</td>
+  <td>LIFNR</td>
+  <td>15</td>
+  <td>&nbsp;</td>
+  <td>LIFNR</td>
+  <td>LIFNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Account Number of Vendor or Creditor</td>
+</tr>
+<tr class="cell">
+  <td>33</td>
+  <td>LOAI_HANG</td>
+  <td>41</td>
+  <td>&nbsp;</td>
+  <td>ZDE_LOAI_HANG</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Loại hàng</td>
+</tr>
+<tr class="cell">
+  <td>34</td>
+  <td>NGAY_DEN</td>
+  <td>37</td>
+  <td>&nbsp;</td>
+  <td>ZDE_NGAY_DEN</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Ngày đến</td>
+</tr>
+<tr class="cell">
+  <td>35</td>
+  <td>NGAY_DI</td>
+  <td>38</td>
+  <td>&nbsp;</td>
+  <td>ZDE_NGAY_DI</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Ngày đi</td>
+</tr>
+<tr class="cell">
+  <td>36</td>
+  <td>NOI_DAU</td>
+  <td>39</td>
+  <td>&nbsp;</td>
+  <td>ZDE_NOI_DAU</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Nơi đậu</td>
+</tr>
+<tr class="cell">
+  <td>37</td>
+  <td>NOTE</td>
+  <td>45</td>
+  <td>&nbsp;</td>
+  <td>ZDE_NOTE</td>
+  <td>CHAR255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>&nbsp;</td>
+  <td>Note</td>
+</tr>
+<tr class="cell">
+  <td>38</td>
+  <td>ORIGINALINVOICE</td>
+  <td>44</td>
+  <td>&nbsp;</td>
+  <td>ZDE_ORIGINALINVOICE</td>
+  <td>CHAR40</td>
+  <td>CHAR</td>
+  <td>40</td>
+  <td>&nbsp;</td>
+  <td>ORIGINALINVOICE</td>
+</tr>
+<tr class="cell">
+  <td>39</td>
+  <td>PAYID</td>
+  <td>43</td>
+  <td>&nbsp;</td>
+  <td>ZDE_PAYID</td>
+  <td>ZDO_PAYID</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Pay Method ID</td>
+</tr>
+<tr class="cell">
+  <td>40</td>
+  <td>PISID</td>
+  <td>52</td>
+  <td>&nbsp;</td>
+  <td>ZDE_PISID</td>
+  <td>TEXT40</td>
+  <td>CHAR</td>
+  <td>40</td>
+  <td>X</td>
+  <td>PartnerInvoiceStringID</td>
+</tr>
+<tr class="cell">
+  <td>41</td>
+  <td>QUOC_TICH</td>
+  <td>35</td>
+  <td>&nbsp;</td>
+  <td>ZDE_QUOC_TICH</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Quốc tịch</td>
+</tr>
+<tr class="cell">
+  <td>42</td>
+  <td>REQUEST</td>
+  <td>53</td>
+  <td>&nbsp;</td>
+  <td>BSP_DLC_XML_XSTRING</td>
+  <td>BSP_XML_XSTRING</td>
+  <td>RSTR</td>
+  <td>0</td>
+  <td>&nbsp;</td>
+  <td>XString for XML Storage</td>
+</tr>
+<tr class="cell">
+  <td>43</td>
+  <td>STYLES</td>
+  <td>55</td>
+  <td>&nbsp;</td>
+  <td>LVC_T_STYL</td>
+  <td>&nbsp;</td>
+  <td>TTYP</td>
+  <td>0</td>
+  <td>&nbsp;</td>
+  <td>ALV Control: Style Table for Cells</td>
+</tr>
+<tr class="cell">
+  <td>44</td>
+  <td>TAMOUNT</td>
+  <td>19</td>
+  <td>&nbsp;</td>
+  <td>DMBTR</td>
+  <td>AFLE13D2O16N_TO_23D2O30N</td>
+  <td>CURR</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>Amount in local currency</td>
+</tr>
+<tr class="cell">
+  <td>45</td>
+  <td>TEN_TAU</td>
+  <td>34</td>
+  <td>&nbsp;</td>
+  <td>ZDE_TEN_TAU</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Tên tàu</td>
+</tr>
+<tr class="cell">
+  <td>46</td>
+  <td>THANH_TOAN</td>
+  <td>32</td>
+  <td>&nbsp;</td>
+  <td>ZDE_THANH_TOAN</td>
+  <td>TEXT50</td>
+  <td>CHAR</td>
+  <td>50</td>
+  <td>X</td>
+  <td>Thanh toán</td>
+</tr>
+<tr class="cell">
+  <td>47</td>
+  <td>TRONG_TAI</td>
+  <td>36</td>
+  <td>&nbsp;</td>
+  <td>ZDE_TRONG_TAI</td>
+  <td>TEXT255</td>
+  <td>CHAR</td>
+  <td>255</td>
+  <td>X</td>
+  <td>Trọng tải</td>
+</tr>
+<tr class="cell">
+  <td>48</td>
+  <td>USNAM</td>
+  <td>6</td>
+  <td>&nbsp;</td>
+  <td>USNAM</td>
+  <td>XUBNAME</td>
+  <td>CHAR</td>
+  <td>12</td>
+  <td>&nbsp;</td>
+  <td>User Name</td>
+</tr>
+<tr class="cell">
+  <td>49</td>
+  <td>WAERK</td>
+  <td>22</td>
+  <td>&nbsp;</td>
+  <td>WAERK</td>
+  <td>WAERS</td>
+  <td>CUKY</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>SD document currency</td>
+</tr>
+<tr class="cell">
+  <td>50</td>
+  <td>WAERS</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>WAERS</td>
+  <td>WAERS</td>
+  <td>CUKY</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>Currency Key</td>
+</tr>
+<tr class="cell">
+  <td>51</td>
+  <td>XBLNR</td>
+  <td>5</td>
+  <td>&nbsp;</td>
+  <td>XBLNR</td>
+  <td>XBLNR</td>
+  <td>CHAR</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>Reference Document Number</td>
+</tr>
+<tr class="cell">
+  <td>52</td>
+  <td>XREF1_HD</td>
+  <td>11</td>
+  <td>&nbsp;</td>
+  <td>XREF1_HD</td>
+  <td>CHAR20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>Reference Key 1 Internal for Document Header</td>
+</tr>
+<tr class="cell">
+  <td>53</td>
+  <td>XREF2_HD</td>
+  <td>12</td>
+  <td>&nbsp;</td>
+  <td>XREF2_HD</td>
+  <td>CHAR20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>Reference Key 2 Internal for Document Header</td>
+</tr>
+<tr class="cell">
+  <td>54</td>
+  <td>ZDEL</td>
+  <td>48</td>
+  <td>&nbsp;</td>
+  <td>CHECKBOX</td>
+  <td>FUNC</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Checkbox in Reporting</td>
+</tr>
+<tr class="cell">
+  <td>55</td>
+  <td>ZTERM</td>
+  <td>50</td>
+  <td>&nbsp;</td>
+  <td>DZTERM</td>
+  <td>ZTERM</td>
+  <td>CHAR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Terms of payment key</td>
+</tr>
+<tr class="cell">
+  <td>56</td>
+  <td>ZTERM_TXT</td>
+  <td>51</td>
+  <td>&nbsp;</td>
+  <td>TEXT1_052</td>
+  <td>TEXT50</td>
+  <td>CHAR</td>
+  <td>50</td>
+  <td>X</td>
+  <td>Own Explanation of Term of Payment</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+<br/>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Fixed Domain Values </h2>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Domain Name</th>
+  <th>Value Low</th>
+  <th>Value High</th>
+  <th>Text</th>
+</tr>
+<tr class="cell">
+  <td>FLAG</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Flag set (event raised)</td>
+</tr>
+<tr class="cell">
+  <td>FLAG</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>Flag is not set</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+   <tr>
+<td class="footer">Extracted by EKB-Tech  - Chris. 20261016. Sap Release 754</td>
+   </tr>
+</table>
+</body>
+</html>

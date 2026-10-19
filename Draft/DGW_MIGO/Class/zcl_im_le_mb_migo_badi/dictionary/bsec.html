@@ -1,0 +1,777 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=ISO-8859-1" />
+<title>Dictionary object- BSEC</title>
+<style type="text/css">
+  th{text-align:left}
+  .cell{
+     font-family:"Courier New", Courier, monospace;
+     color:#000;
+     font-size:12px;
+     background-color:#F2F4F7;
+  }
+  .cell td { border: thin solid #ccc; }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Table: BSEC</h2>
+  <h3>Description: One-Time Account Data Document Segment</h3></td>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Row</th>
+  <th>Field name</th>
+  <th>Position</th>
+  <th>Key</th>
+  <th>Data element</th>
+  <th>Domain</th>
+  <th>Datatype</th>
+  <th>Length</th>
+  <th>Lowercase</th>
+  <th>Domain text</th>
+</tr>
+<tr class="cell">
+  <td> 1</td>
+  <td>.INCLUDE</td>
+  <td>47</td>
+  <td>&nbsp;</td>
+  <td>FAC_BSEC_EXT_GLO</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>0</td>
+  <td>&nbsp;</td>
+  <td>One Time Customer Data: Extension include for globalisation</td>
+</tr>
+<tr class="cell">
+  <td> 2</td>
+  <td>ADRNR</td>
+  <td>41</td>
+  <td>&nbsp;</td>
+  <td>ADRNR</td>
+  <td>ADRNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Address</td>
+</tr>
+<tr class="cell">
+  <td> 3</td>
+  <td>ANRED</td>
+  <td>40</td>
+  <td>&nbsp;</td>
+  <td>ANRED</td>
+  <td>TEXT15</td>
+  <td>CHAR</td>
+  <td>15</td>
+  <td>X</td>
+  <td>Title</td>
+</tr>
+<tr class="cell">
+  <td> 4</td>
+  <td>BANKL</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>BANKK</td>
+  <td>BANKK</td>
+  <td>CHAR</td>
+  <td>15</td>
+  <td>&nbsp;</td>
+  <td>Bank Keys</td>
+</tr>
+<tr class="cell">
+  <td> 5</td>
+  <td>BANKN</td>
+  <td>17</td>
+  <td>&nbsp;</td>
+  <td>BANKN</td>
+  <td>BANKN</td>
+  <td>CHAR</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>Bank account number</td>
+</tr>
+<tr class="cell">
+  <td> 6</td>
+  <td>BANKS</td>
+  <td>19</td>
+  <td>&nbsp;</td>
+  <td>BANKS</td>
+  <td>LAND1</td>
+  <td>CHAR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Bank Country/Region Key</td>
+</tr>
+<tr class="cell">
+  <td> 7</td>
+  <td>BEGRU</td>
+  <td>44</td>
+  <td>&nbsp;</td>
+  <td>BEGRU</td>
+  <td>BEGRU</td>
+  <td>CHAR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Authorization Group</td>
+</tr>
+<tr class="cell">
+  <td> 8</td>
+  <td>BELNR</td>
+  <td>3</td>
+  <td>X</td>
+  <td>BELNR_D</td>
+  <td>BELNR</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Document Number of an Accounting Document</td>
+</tr>
+<tr class="cell">
+  <td> 9</td>
+  <td>BKONT</td>
+  <td>25</td>
+  <td>&nbsp;</td>
+  <td>BKONT</td>
+  <td>BKONT</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Bank Control Key</td>
+</tr>
+<tr class="cell">
+  <td>10</td>
+  <td>BKREF</td>
+  <td>36</td>
+  <td>&nbsp;</td>
+  <td>BKREF</td>
+  <td>CHAR20</td>
+  <td>CHAR</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>Reference Details for Bank Details</td>
+</tr>
+<tr class="cell">
+  <td>11</td>
+  <td>BUKRS</td>
+  <td>2</td>
+  <td>X</td>
+  <td>BUKRS</td>
+  <td>BUKRS</td>
+  <td>CHAR</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Company Code</td>
+</tr>
+<tr class="cell">
+  <td>12</td>
+  <td>BUZEI</td>
+  <td>5</td>
+  <td>X</td>
+  <td>BUZEI</td>
+  <td>BUZEI</td>
+  <td>NUMC</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Number of Line Item Within Accounting Document</td>
+</tr>
+<tr class="cell">
+  <td>13</td>
+  <td>DTAMS</td>
+  <td>27</td>
+  <td>&nbsp;</td>
+  <td>DTAMS</td>
+  <td>DTAMS</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Recipient Code for Data Medium Exchange</td>
+</tr>
+<tr class="cell">
+  <td>14</td>
+  <td>DTAWS</td>
+  <td>26</td>
+  <td>&nbsp;</td>
+  <td>DTAWS</td>
+  <td>DTAWS</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Instruction Key for Data Medium Exchange</td>
+</tr>
+<tr class="cell">
+  <td>15</td>
+  <td>EMPFG</td>
+  <td>29</td>
+  <td>&nbsp;</td>
+  <td>EMPFG</td>
+  <td>EMPFG</td>
+  <td>CHAR</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>Payment Recipient Code</td>
+</tr>
+<tr class="cell">
+  <td>16</td>
+  <td>FITYP</td>
+  <td>31</td>
+  <td>&nbsp;</td>
+  <td>J_1AFITP_D</td>
+  <td>J_1AFITP</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Tax Type</td>
+</tr>
+<tr class="cell">
+  <td>17</td>
+  <td>GJAHR</td>
+  <td>4</td>
+  <td>X</td>
+  <td>GJAHR</td>
+  <td>GJAHR</td>
+  <td>NUMC</td>
+  <td>4</td>
+  <td>&nbsp;</td>
+  <td>Fiscal Year</td>
+</tr>
+<tr class="cell">
+  <td>18</td>
+  <td>GLO_RE1_OT</td>
+  <td>48</td>
+  <td>&nbsp;</td>
+  <td>FAC_GLO_REF1_OT</td>
+  <td>FAC_GLO_REF1_OT</td>
+  <td>CHAR</td>
+  <td>140</td>
+  <td>X</td>
+  <td>Ctry/Reg. Specific Reference in the One Time Account Data</td>
+</tr>
+<tr class="cell">
+  <td>19</td>
+  <td>INTAD</td>
+  <td>46</td>
+  <td>&nbsp;</td>
+  <td>INTAD</td>
+  <td>TXT130</td>
+  <td>CHAR</td>
+  <td>130</td>
+  <td>X</td>
+  <td>Internet address of partner company clerk</td>
+</tr>
+<tr class="cell">
+  <td>20</td>
+  <td>J_1KFREPRE</td>
+  <td>37</td>
+  <td>&nbsp;</td>
+  <td>REPRES</td>
+  <td>REPRES</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>X</td>
+  <td>Name of Representative</td>
+</tr>
+<tr class="cell">
+  <td>21</td>
+  <td>J_1KFTBUS</td>
+  <td>38</td>
+  <td>&nbsp;</td>
+  <td>GESTYP</td>
+  <td>GESTYP</td>
+  <td>CHAR</td>
+  <td>30</td>
+  <td>X</td>
+  <td>Type of Business</td>
+</tr>
+<tr class="cell">
+  <td>22</td>
+  <td>J_1KFTIND</td>
+  <td>39</td>
+  <td>&nbsp;</td>
+  <td>INDTYP</td>
+  <td>INDTYP</td>
+  <td>CHAR</td>
+  <td>30</td>
+  <td>X</td>
+  <td>Type of Industry</td>
+</tr>
+<tr class="cell">
+  <td>23</td>
+  <td>LAND1</td>
+  <td>12</td>
+  <td>&nbsp;</td>
+  <td>LAND1_GP</td>
+  <td>LAND1</td>
+  <td>CHAR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Country/Region Key</td>
+</tr>
+<tr class="cell">
+  <td>24</td>
+  <td>MANDT</td>
+  <td>1</td>
+  <td>X</td>
+  <td>MANDT</td>
+  <td>MANDT</td>
+  <td>CLNT</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Client</td>
+</tr>
+<tr class="cell">
+  <td>25</td>
+  <td>NAME1</td>
+  <td>6</td>
+  <td>&nbsp;</td>
+  <td>NAME1_GP</td>
+  <td>NAME</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>X</td>
+  <td>Name 1</td>
+</tr>
+<tr class="cell">
+  <td>26</td>
+  <td>NAME2</td>
+  <td>7</td>
+  <td>&nbsp;</td>
+  <td>NAME2_GP</td>
+  <td>NAME</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>X</td>
+  <td>Name 2</td>
+</tr>
+<tr class="cell">
+  <td>27</td>
+  <td>NAME3</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>NAME3_GP</td>
+  <td>NAME</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>X</td>
+  <td>Name 3</td>
+</tr>
+<tr class="cell">
+  <td>28</td>
+  <td>NAME4</td>
+  <td>9</td>
+  <td>&nbsp;</td>
+  <td>NAME4_GP</td>
+  <td>NAME</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>X</td>
+  <td>Name 4</td>
+</tr>
+<tr class="cell">
+  <td>29</td>
+  <td>ORT01</td>
+  <td>11</td>
+  <td>&nbsp;</td>
+  <td>ORT01_GP</td>
+  <td>TEXT35</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>X</td>
+  <td>City</td>
+</tr>
+<tr class="cell">
+  <td>30</td>
+  <td>PFACH</td>
+  <td>14</td>
+  <td>&nbsp;</td>
+  <td>PFACH</td>
+  <td>PFACH</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>PO Box</td>
+</tr>
+<tr class="cell">
+  <td>31</td>
+  <td>PO_BOX_NUM</td>
+  <td>43</td>
+  <td>&nbsp;</td>
+  <td>AD_POBXNUM</td>
+  <td>XFELD</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Flag: PO Box Without Number</td>
+</tr>
+<tr class="cell">
+  <td>32</td>
+  <td>PSKTO</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>PSKTO</td>
+  <td>PSKTO</td>
+  <td>CHAR</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>PO Bank Current Acct No. or Building Society Ref. No.</td>
+</tr>
+<tr class="cell">
+  <td>33</td>
+  <td>PSTL2</td>
+  <td>15</td>
+  <td>&nbsp;</td>
+  <td>PSTL2</td>
+  <td>PSTLZ</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>P.O. Box Postal Code</td>
+</tr>
+<tr class="cell">
+  <td>34</td>
+  <td>PSTLZ</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>PSTLZ</td>
+  <td>PSTLZ</td>
+  <td>CHAR</td>
+  <td>10</td>
+  <td>&nbsp;</td>
+  <td>Postal Code</td>
+</tr>
+<tr class="cell">
+  <td>35</td>
+  <td>REGIO</td>
+  <td>24</td>
+  <td>&nbsp;</td>
+  <td>REGIO</td>
+  <td>REGIO</td>
+  <td>CHAR</td>
+  <td>3</td>
+  <td>&nbsp;</td>
+  <td>Region (State, Province, County)</td>
+</tr>
+<tr class="cell">
+  <td>36</td>
+  <td>SPRAS</td>
+  <td>30</td>
+  <td>&nbsp;</td>
+  <td>SPRAS</td>
+  <td>SPRAS</td>
+  <td>LANG</td>
+  <td>1</td>
+  <td>X</td>
+  <td>Language Key</td>
+</tr>
+<tr class="cell">
+  <td>37</td>
+  <td>STCD1</td>
+  <td>20</td>
+  <td>&nbsp;</td>
+  <td>STCD1</td>
+  <td>STCD1</td>
+  <td>CHAR</td>
+  <td>16</td>
+  <td>&nbsp;</td>
+  <td>Tax Number 1</td>
+</tr>
+<tr class="cell">
+  <td>38</td>
+  <td>STCD2</td>
+  <td>21</td>
+  <td>&nbsp;</td>
+  <td>STCD2</td>
+  <td>STCD2</td>
+  <td>CHAR</td>
+  <td>11</td>
+  <td>&nbsp;</td>
+  <td>Tax Number 2</td>
+</tr>
+<tr class="cell">
+  <td>39</td>
+  <td>STCD3</td>
+  <td>34</td>
+  <td>&nbsp;</td>
+  <td>STCD3</td>
+  <td>CHAR18</td>
+  <td>CHAR</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>Tax Number 3</td>
+</tr>
+<tr class="cell">
+  <td>40</td>
+  <td>STCD4</td>
+  <td>35</td>
+  <td>&nbsp;</td>
+  <td>STCD4</td>
+  <td>CHAR18</td>
+  <td>CHAR</td>
+  <td>18</td>
+  <td>&nbsp;</td>
+  <td>Tax Number 4</td>
+</tr>
+<tr class="cell">
+  <td>41</td>
+  <td>STCD5</td>
+  <td>45</td>
+  <td>&nbsp;</td>
+  <td>STCD5</td>
+  <td>CHAR60</td>
+  <td>CHAR</td>
+  <td>60</td>
+  <td>&nbsp;</td>
+  <td>Tax Number 5</td>
+</tr>
+<tr class="cell">
+  <td>42</td>
+  <td>STCDT</td>
+  <td>32</td>
+  <td>&nbsp;</td>
+  <td>J_1ATOID</td>
+  <td>J_1ATOID</td>
+  <td>CHAR</td>
+  <td>2</td>
+  <td>&nbsp;</td>
+  <td>Tax Number Type</td>
+</tr>
+<tr class="cell">
+  <td>43</td>
+  <td>STKZA</td>
+  <td>23</td>
+  <td>&nbsp;</td>
+  <td>STKZA</td>
+  <td>STKZA</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Indicator: Business Partner Subject to Equalization Tax?</td>
+</tr>
+<tr class="cell">
+  <td>44</td>
+  <td>STKZN</td>
+  <td>33</td>
+  <td>&nbsp;</td>
+  <td>STKZN</td>
+  <td>STKZN</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Natural Person</td>
+</tr>
+<tr class="cell">
+  <td>45</td>
+  <td>STKZU</td>
+  <td>22</td>
+  <td>&nbsp;</td>
+  <td>STKZU</td>
+  <td>XFELD</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Liable for VAT</td>
+</tr>
+<tr class="cell">
+  <td>46</td>
+  <td>STRAS</td>
+  <td>13</td>
+  <td>&nbsp;</td>
+  <td>STRAS_GP</td>
+  <td>TEXT35</td>
+  <td>CHAR</td>
+  <td>35</td>
+  <td>X</td>
+  <td>Street and House Number</td>
+</tr>
+<tr class="cell">
+  <td>47</td>
+  <td>XCPDK</td>
+  <td>28</td>
+  <td>&nbsp;</td>
+  <td>XCPDK</td>
+  <td>XFELD</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Indicator: Is the account a one-time account?</td>
+</tr>
+<tr class="cell">
+  <td>48</td>
+  <td>XRGUH</td>
+  <td>42</td>
+  <td>&nbsp;</td>
+  <td>XRGUH</td>
+  <td>XRGUH</td>
+  <td>CHAR</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Indicator: Bank Details from REGUH</td>
+</tr>
+<tr class="cell">
+  <td>49</td>
+  <td>_DATAAGING</td>
+  <td>49</td>
+  <td>&nbsp;</td>
+  <td>DATA_TEMPERATURE</td>
+  <td>DATA_TEMPERATURE</td>
+  <td>DATS</td>
+  <td>8</td>
+  <td>&nbsp;</td>
+  <td>Data Filter Value for Data Aging</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+<br/>
+  <table class="outerTable">
+    <tr>
+      <td><h2>Fixed Domain Values </h2>
+    </tr>
+    <tr>
+      <td><!--This is where our main table begins  -->
+<table class="innerTable">
+<tr>
+  <th>Domain Name</th>
+  <th>Value Low</th>
+  <th>Value High</th>
+  <th>Text</th>
+</tr>
+<tr class="cell">
+  <td>DTAMS</td>
+  <td>1</td>
+  <td>&nbsp;</td>
+  <td>Single data record not to be forwarded to the Bundesbank</td>
+</tr>
+<tr class="cell">
+  <td>DTAMS</td>
+  <td>0</td>
+  <td>&nbsp;</td>
+  <td>Single data record can be forwarded to the Bundesbank</td>
+</tr>
+<tr class="cell">
+  <td>DTAMS</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>Use house bank default value</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Yes</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>No</td>
+</tr>
+<tr class="cell">
+  <td>STKZA</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>Not subject to equalization tax</td>
+</tr>
+<tr class="cell">
+  <td>STKZA</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Subject to equalization tax</td>
+</tr>
+<tr class="cell">
+  <td>STKZN</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Natural person</td>
+</tr>
+<tr class="cell">
+  <td>STKZN</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>Legal person</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Yes</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>No</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Yes</td>
+</tr>
+<tr class="cell">
+  <td>XFELD</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>No</td>
+</tr>
+<tr class="cell">
+  <td>XRGUH</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>One Time Account or Alternative Payee</td>
+</tr>
+<tr class="cell">
+  <td>XRGUH</td>
+  <td>D</td>
+  <td>&nbsp;</td>
+  <td>Delete Payment Data</td>
+</tr>
+<tr class="cell">
+  <td>XRGUH</td>
+  <td>X</td>
+  <td>&nbsp;</td>
+  <td>Payment Data from REGUH</td>
+</tr>
+      </table>
+     </td>
+   </tr>
+   <tr>
+<td class="footer">Extracted by EKB-Tech  - Chris. 20260928. Sap Release 757</td>
+   </tr>
+</table>
+</body>
+</html>
