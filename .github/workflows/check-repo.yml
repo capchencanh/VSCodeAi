@@ -1,0 +1,13 @@
+# Kiem tra quy tac push (QUY_TAC_PUSH.md) tren GitHub - chay ca khi thanh vien chua bat hook pre-commit.
+name: check-repo
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kiem tra quy tac repo
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-repo.ps1 -All

@@ -1,0 +1,68 @@
+{
+  "mcpServers": {
+    "CLD___KH___DEV": {
+      "timeout": 120,
+      "type": "stdio",
+      "command": "C:\\Citek\\vibing-steampunk\\vsp.exe",
+      "args": [
+        "--url",
+        "https://__HOST_DEV__.s4hana.cloud.sap",
+        "--client",
+        "080",
+        "--mode",
+        "expert",
+        "--language",
+        "EN",
+        "--keepalive",
+        "5m",
+        "--cookie-file",
+        "C:\\Citek\\vibing-steampunk\\cookies-cloud-__KH___DEV.txt",
+        "--enable-transports",
+        "--transport-read-only",
+        "--allow-transportable-edits",
+        "--allowed-transports",
+        "*",
+        "--allowed-packages",
+        "Z*,$TMP,$Z*",
+        "--allowed-ops",
+        "RSQFCUATLI",
+        "--feature-hana",
+        "on",
+        "--feature-abapgit",
+        "on",
+        "--feature-rap",
+        "on",
+        "--feature-amdp",
+        "on",
+        "--feature-ui5",
+        "on",
+        "--feature-transport",
+        "on"
+      ]
+    },
+    "CLD___KH___REFRESH_DEV": {
+      "timeout": 600,
+      "type": "stdio",
+      "command": "C:\\Citek\\vibing-steampunk\\vsp.exe",
+      "args": [
+        "--url",
+        "https://__HOST_DEV__.s4hana.cloud.sap",
+        "--client",
+        "080",
+        "--mode",
+        "expert",
+        "--language",
+        "EN",
+        "--browser-auth",
+        "--browser-auth-timeout",
+        "5m",
+        "--cookie-save",
+        "C:\\Citek\\vibing-steampunk\\cookies-cloud-__KH___DEV.txt",
+        "--allowed-packages",
+        "Z*,$TMP,$Z*",
+        "--allowed-ops",
+        "RSQFI"
+      ]
+    }
+  }
+}

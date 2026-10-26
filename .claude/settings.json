@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(~/.claude/skills/**)",
+      "Edit(~/.claude/skills/**)",
+      "Skill(artifact-design)"
+    ]
+  },
+  "enabledPlugins": {
+    "sap-abap@abap-skills": false
+  }
+}

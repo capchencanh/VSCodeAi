@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "spec-writing",
+  "owner": "athola",
+  "repo": "claude-night-market",
+  "path": "plugins/spec-kit/skills/spec-writing",
+  "branch": "master",
+  "sha": "60a1dcd474ff4169f89ad59652f0e54e8575d698",
+  "source": "manual"
+}

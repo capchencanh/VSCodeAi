@@ -1,0 +1,17 @@
+{
+    "mcpServers":  {
+                       "GUI_ACG_DEV300":  {
+                                              "disabled":  false,
+                                              "command":  "C:\\Citek\\vibing-steampunk\\vsp.exe",
+                                              "args":  [
+                                                           "--allow-transportable-edits"
+                                                       ],
+                                              "env":  {
+                                                          "SAP_URL":  "http://devcloudci.acg.com.vn:8085",
+                                                          "SAP_USER":  "CT_AI",
+                                                          "SAP_CLIENT":  "300",
+                                                          "SAP_PASSWORD":  ""
+                                                      }
+                                          }
+                   }
+}

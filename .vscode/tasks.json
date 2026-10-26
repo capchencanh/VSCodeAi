@@ -1,0 +1,70 @@
+{
+  // Mo goc repo: Ctrl+Shift+P > Tasks: Run Task > chon task. Thu tu thuong dung: Bat dau ngay -> ... -> Luu tat ca du an
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Bắt đầu ngày",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\bat-dau-ngay.ps1"],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Tạo dự án mới",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\scripts\\tao-du-an.ps1",
+        "${input:kh}", "${input:platform}"
+      ],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Nhận dự án của team (lấy code từ GitHub)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\scripts\\git-du-an.ps1", "noi", "${input:kh}"
+      ],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Tạo chức năng mới",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\scripts\\tao-chuc-nang.ps1",
+        "${input:kh}", "${input:cn}"
+      ],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lưu tất cả dự án (commit + đẩy GitHub)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\git-du-an.ps1", "luu"],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Kiểm tra trước khi push repo team",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\check-repo.ps1", "-All"],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    { "id": "kh", "type": "promptString", "description": "Tên dự án (thư mục trong CodeABAP), vd AVN, SGC, ACG" },
+    { "id": "cn", "type": "promptString", "description": "Tên chức năng, vd YPS05, ZGL10" },
+    { "id": "platform", "type": "pickString", "description": "Nền tảng", "options": ["gui", "cloud", "khac"], "default": "gui" }
+  ]
+}

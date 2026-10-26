@@ -1,0 +1,46 @@
+{
+  // Mo thu muc du an CodeABAP\<KH>: Ctrl+Shift+P > Run Task > chon task (script tu nhan du an tu thu muc)
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Tạo chức năng mới",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\..\\..\\scripts\\tao-chuc-nang.ps1",
+        "${input:cn}"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lưu dự án (commit + đẩy GitHub)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\..\\..\\scripts\\git-du-an.ps1", "luu"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lấy bản mới dự án",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\..\\..\\scripts\\git-du-an.ps1", "lay"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    { "id": "cn", "type": "promptString", "description": "Tên chức năng, vd YPS05, ZGL10" }
+  ]
+}

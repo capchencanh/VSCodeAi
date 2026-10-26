@@ -1,0 +1,28 @@
+#!/bin/sh
+# Kiem tra quy tac push (QUY_TAC_PUSH.md) tren cac file dang staged.
+# Bat 1 lan: git config core.hooksPath scripts/hooks
+root="$(git rev-parse --show-toplevel)"
+
+if command -v powershell.exe >/dev/null 2>&1; then PS=powershell.exe
+elif command -v pwsh >/dev/null 2>&1; then PS=pwsh
+else PS=""; fi
+
+if [ -n "$PS" ]; then
+  "$PS" -NoProfile -ExecutionPolicy Bypass -File "$root/scripts/check-repo.ps1" -Staged || {
+    echo "pre-commit: commit bi chan - sua cac LOI tren (xem QUY_TAC_PUSH.md) roi commit lai." >&2
+    exit 1
+  }
+  exit 0
+fi
+
+# Du phong khi khong co PowerShell: chi chan mat khau that
+hits=$(git diff --cached -U0 --diff-filter=ACM \
+  | grep -E '^\+' \
+  | grep -iE '("SAP_PASSWORD"|"password"|--password|_PASSWORD=)' \
+  | grep -vE '\$\{[A-Za-z0-9_]+\}|__[A-Z_]+__|_PASSWORD=[[:space:]]*$')
+if [ -n "$hits" ]; then
+  echo "pre-commit: phat hien mat khau trong file sap commit:" >&2
+  echo "$hits" | sed -E 's/(:[[:space:]]*"|=)[^"]*/\1***/' >&2
+  exit 1
+fi
+exit 0

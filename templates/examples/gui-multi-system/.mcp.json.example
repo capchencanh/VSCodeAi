@@ -1,0 +1,56 @@
+{
+  "mcpServers": {
+    "GUI_KH_DEV100": {
+      "command": "C:\\Citek\\vibing-steampunk\\vsp.exe",
+      "args": [
+        "--mode", "expert",
+        "--language", "EN",
+        "--keepalive", "5m",
+        "--enable-transports",
+        "--allow-transportable-edits", "--allowed-transports", "*",
+        "--allowed-packages", "Z*,$TMP,$Z*",
+        "--allowed-ops", "RSQFCUATLI",
+        "--feature-hana", "on", "--feature-abapgit", "on", "--feature-rap", "on",
+        "--feature-amdp", "on", "--feature-ui5", "on", "--feature-transport", "on"
+      ],
+      "env": {
+        "SAP_URL": "https://sap-dev.khachhang.vn:44300",
+        "SAP_USER": "CT_AI",
+        "SAP_CLIENT": "100",
+        "SAP_PASSWORD": ""
+      }
+    },
+    "GUI_KH_QAS200": {
+      "command": "C:\\Citek\\vibing-steampunk\\vsp.exe",
+      "args": [
+        "--insecure",
+        "--mode", "expert",
+        "--language", "EN",
+        "--keepalive", "5m",
+        "--allowed-packages", "Z*",
+        "--allowed-ops", "RSQ"
+      ],
+      "env": {
+        "SAP_URL": "https://sap-qas.khachhang.vn:44300",
+        "SAP_USER": "CT_AI",
+        "SAP_CLIENT": "200",
+        "SAP_PASSWORD": ""
+      }
+    },
+    "GUI_KH_PRD800": {
+      "command": "C:\\Citek\\vibing-steampunk\\vsp.exe",
+      "args": [
+        "--mode", "focused",
+        "--language", "EN",
+        "--read-only",
+        "--allowed-ops", "RSQ"
+      ],
+      "env": {
+        "SAP_URL": "https://sap-prd.khachhang.vn:44300",
+        "SAP_USER": "CT_READONLY",
+        "SAP_CLIENT": "800",
+        "SAP_PASSWORD": ""
+      }
+    }
+  }
+}

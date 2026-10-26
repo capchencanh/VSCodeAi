@@ -1,0 +1,64 @@
+# Chứa thông tin đăng nhập SAP (SAP_USER/SAP_PASSWORD) - không đẩy lên git (mọi cấp thư mục)
+.mcp.json
+# Kho server MCP cá nhân ở gốc repo (nguồn cho tao-du-an.ps1 -Servers). KHÔNG đặt tên .mcp.json ở gốc:
+# Claude Code sẽ nạp nó cho mọi thư mục con và che/lẫn .mcp.json của từng dự án.
+.mcp.all.json
+# vsp.exe tự đọc .env / .vsp.json ở thư mục project (chứa SAP_PASSWORD) — mọi cấp thư mục
+.env
+.vsp.json
+# File mẫu cũ có mật khẩu thật — đã chuyển sang templates/mcp/*.example, chặn tạo lại
+.mcp.sample.text
+
+# Cấu hình Claude Code cục bộ / theo máy (mọi cấp thư mục, kể cả CodeABAP/<KH>/.claude/)
+**/.claude/settings.local.json
+**/.claude/scheduled_tasks.lock
+
+# Backup nội bộ - không đọc/không đẩy git (theo CLAUDE.md)
+Backup/
+
+# Dự án CodeABAP/<KH>/: code/tài liệu/ghi chú lên REPO DỰ ÁN riêng (scripts/git-du-an.ps1, HUONG_DAN_CAU_TRUC.md mục 8).
+# .mcp.json của dự án chứa MẬT KHẨU (SAP_PASSWORD trong env) -> chỉ trên máy (đã ignore bởi rule .mcp.json).
+# Repo team CHỈ nhận: CodeABAP/<KH>/.mcp.json.example (giống .mcp.json nhưng mật khẩu để trống)
+#                     CodeABAP/<KH>/.claude/settings.json (tắt sẵn server refresh cookie)
+CodeABAP/*
+!CodeABAP/*/
+CodeABAP/*/*
+!CodeABAP/*/.mcp.json.example
+!CodeABAP/*/.claude/
+CodeABAP/*/.claude/*
+!CodeABAP/*/.claude/settings.json
+# Dữ liệu git của các repo dự án (git-dir nằm ngoài CodeABAP/<KH> để Claude Code vẫn nạp skill team)
+.git-du-an/
+# Thư mục làm việc cá nhân của team (từ main)
+sql/
+MD/
+draft/
+
+# File cá nhân: tên viết tắt dùng trong comment code (CLAUDE.md)
+UserName.md
+
+# Binary MCP server vsp.exe (tool SAP) - không đẩy lên git
+vsp/
+
+# OS / editor artifacts
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+__pycache__/
+*.pyc
+
+# Quy tắc cá nhân của từng người (Claude Code tự nạp, không chia sẻ)
+CLAUDE.local.md
+
+# Bản sao skill của công cụ khác — Claude Code không nạp, nguồn duy nhất là .claude/skills/
+.agents/
+# Khoá phiên bản skill của công cụ `skills` (npx) — skill trong .claude/skills/ đã chỉnh riêng, không cập nhật theo nguồn gốc
+skills-lock.json
+
+# Không đẩy file nén dung lượng lớn lên git
+*.rar
+*.zip
+
+# Bản sao lưu cấu hình MCP cá nhân (DanhDH, thêm khi pull 26.10.2026)
+.mcp.servers-backup.json

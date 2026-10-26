@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "GUI_S19_DEV100": {
+      "command": "C:\\Citek\\vibing-steampunk\\vsp.exe",
+      "args": [
+        "--insecure",
+        "--mode",
+        "expert",
+        "--language",
+        "EN",
+        "--verbose",
+        "--keepalive",
+        "5m",
+        "--enable-transports",
+        "--allow-transportable-edits",
+        "--allowed-transports",
+        "*",
+        "--allowed-packages",
+        "Z*,$TMP,$Z*",
+        "--allowed-ops",
+        "RSQFCUATLI",
+        "--feature-hana",
+        "on",
+        "--feature-abapgit",
+        "on",
+        "--feature-rap",
+        "on",
+        "--feature-amdp",
+        "on",
+        "--feature-ui5",
+        "on",
+        "--feature-transport",
+        "on"
+      ],
+      "env": {
+        "SAP_URL": "https://10.1.1.19:44335",
+        "SAP_USER": "CT.CSNGHIA2",
+        "SAP_CLIENT": "100",
+        "SAP_PASSWORD": ""
+      }
+    }
+  }
+}

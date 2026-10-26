@@ -1,0 +1,2 @@
+# Hook git chay bang sh - bat buoc xuong dong LF (CRLF lam hong script tren may khac)
+scripts/hooks/* text eol=lf

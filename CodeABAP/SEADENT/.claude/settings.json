@@ -1,0 +1,6 @@
+{
+  "disabledMcpjsonServers": [
+    "CLD_SEADENT_REFRESH_DEV",
+    "CLD_SEADENT_REFRESH_CUS"
+  ]
+}

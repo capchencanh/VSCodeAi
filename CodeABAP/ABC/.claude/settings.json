@@ -1,0 +1,6 @@
+{
+  "disabledMcpjsonServers": [
+    "CLD_ABC_REFRESH_DEV",
+    "CLD_ABC_REFRESH_CUS"
+  ]
+}

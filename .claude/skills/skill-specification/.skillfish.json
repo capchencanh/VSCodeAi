@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "skill-specification",
+  "owner": "plurigrid",
+  "repo": "asi",
+  "path": "plugins/asi/skills/skill-specification",
+  "branch": "main",
+  "sha": "42ae5241e5e4512d72162cc9061de2d3b55c0376",
+  "source": "manual"
+}
